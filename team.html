@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Equipo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-team-detail">
+    <div class="container">
+        <header class="page-header card">
+            <div>
+                <span class="season-label">Detalle del Equipo</span>
+                <h1 id="detail-title">Escudería</h1>
+                <p id="detail-subtitle">Ficha técnica y resultados de la escudería seleccionada.</p>
+            </div>
+            <div class="header-actions">
+                <form class="search-form" id="top-search-form">
+                    <label class="visually-hidden" for="search-input">Buscar piloto o equipo</label>
+                    <input id="search-input" class="search-input search-input-small" type="search" placeholder="Buscar..." autocomplete="off">
+                </form>
+                <nav class="hero-links">
+                    <a class="hero-link" href="index.html">Inicio</a>
+                    <a class="hero-link" href="drivers.html">Pilotos</a>
+                    <a class="hero-link" href="teams.html">Equipos</a>
+                </nav>
+            </div>
+        </header>
+
+        <section id="detail-content" class="card detail-card"></section>
+
+        <section class="card search-card">
+            <h2>Resultados de búsqueda</h2>
+            <ul id="search-results" class="results" aria-live="polite"></ul>
+        </section>
+    </div>
+    <script src="data.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

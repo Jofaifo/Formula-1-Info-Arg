@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipos F1 2026</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-teams">
+    <div class="container">
+        <header class="page-header card">
+            <div>
+                <span class="season-label">Escuderías 2026</span>
+                <h1>Tabla de Equipos</h1>
+                <p>Consulta los puntajes de cada escudería y abre sus mini páginas informativas.</p>
+            </div>
+            <div class="header-actions">
+                <form class="search-form" id="top-search-form">
+                    <label class="visually-hidden" for="search-input">Buscar piloto o equipo</label>
+                    <input id="search-input" class="search-input search-input-small" type="search" placeholder="Buscar..." autocomplete="off">
+                </form>
+                <nav class="hero-links">
+                    <a class="hero-link" href="index.html">Inicio</a>
+                    <a class="hero-link" href="drivers.html">Pilotos</a>
+                </nav>
+            </div>
+        </header>
+
+        <section class="card standings-card">
+            <h2>Puntos por escudería</h2>
+            <table class="standings" id="constructor-standings">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Escudería</th>
+                        <th>Puntos</th>
+                        <th>Detalle</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        <section class="entity-grid" id="team-cards"></section>
+
+        <section class="card search-card">
+            <h2>Resultados de búsqueda</h2>
+            <ul id="search-results" class="results" aria-live="polite"></ul>
+        </section>
+    </div>
+    <script src="data.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fórmula 1 2026</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-home">
+    <div class="container">
+        <header class="page-header card">
+            <div>
+                <span class="season-label">Temporada F1 2026</span>
+                <h1>Resumen de la temporada</h1>
+                <p>Explora los puntajes de pilotos y equipos, con acceso rápido a cada mini página.</p>
+            </div>
+            <div class="header-actions">
+                <form class="search-form" id="top-search-form">
+                    <label class="visually-hidden" for="search-input">Buscar piloto o equipo</label>
+                    <input id="search-input" class="search-input search-input-small" type="search" placeholder="Buscar piloto o equipo..." autocomplete="off">
+                </form>
+                <nav class="hero-links">
+                    <a class="hero-link" href="drivers.html">Pilotos</a>
+                    <a class="hero-link" href="teams.html">Escuderías</a>
+                </nav>
+            </div>
+        </header>
+
+        <section class="card hero-overview">
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="stat-number">22</span>
+                    <span>Carreras</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="stat-number">11</span>
+                    <span>Escuderías</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="stat-number">20</span>
+                    <span>Pilotos</span>
+                </div>
+            </div>
+            <div class="hero-summary">
+                <h2>Lo más destacado</h2>
+                <p>Accede a las tablas completas desde las subpáginas de pilotos y equipos, o busca directamente al piloto o escudería por nombre.</p>
+            </div>
+        </section>
+
+        <section class="card search-card">
+            <h2>Resultados de búsqueda</h2>
+            <ul id="search-results" class="results" aria-live="polite"></ul>
+        </section>
+    </div>
+    <script src="data.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
