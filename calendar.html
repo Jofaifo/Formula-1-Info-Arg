@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario F1 2026</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-calendar">
+    <div class="container">
+        <header class="page-header card">
+            <div>
+                <span class="season-label">Calendario 2026</span>
+                <h1>Fechas y circuitos</h1>
+                <p>Revisa todas las rondas confirmadas y el estado de cada carrera.</p>
+            </div>
+            <div class="header-actions">
+                <form class="search-form" id="top-search-form">
+                    <label class="visually-hidden" for="search-input">Buscar piloto o equipo</label>
+                    <input id="search-input" class="search-input search-input-small" type="search" placeholder="Buscar piloto o equipo..." autocomplete="off">
+                </form>
+                <nav class="hero-links">
+                    <a class="hero-link" href="index.html">Inicio</a>
+                    <a class="hero-link" href="drivers.html">Pilotos</a>
+                    <a class="hero-link" href="teams.html">Equipos</a>
+                </nav>
+            </div>
+        </header>
+
+        <section class="card schedule-card">
+            <h2>Calendario de la temporada</h2>
+            <ol class="calendar-list">
+                <li><strong>R1</strong> — Dom 8 mar → 🇦🇺 Australia, Melbourne ✅</li>
+                <li><strong>R2</strong> — Dom 15 mar → 🇨🇳 China, Shanghai 🏃<em>(Sprint)</em> ✅</li>
+                <li><strong>R3</strong> — Dom 29 mar → 🇯🇵 Japón, Suzuka ✅</li>
+                <li><strong>R4</strong> — Dom 3 may → 🇺🇸 Miami 🏃<em>(Sprint)</em> — <strong>14:00 hs</strong> ✅</li>
+                <li><strong>R5</strong> — Dom 24 may → 🇨🇦 Canadá, Montreal 🏃<em>(Sprint)</em> — <strong>17:00 hs</strong> ✅</li>
+                <li><strong>R6</strong> — Dom 7 jun → 🇲🇨 Mónaco 🔜 — <strong>10:00 hs</strong></li>
+                <li><strong>R7</strong> — Dom 14 jun → 🇪🇸 Barcelona-Catalunya — <strong>10:00 hs</strong> ⏳</li>
+                <li><strong>R8</strong> — Dom 28 jun → 🇦🇹 Austria, Spielberg — <strong>10:00 hs</strong> ⏳</li>
+                <li><strong>R9</strong> — Dom 5 jul → 🇬🇧 Gran Bretaña, Silverstone 🏃<em>(Sprint)</em> — <strong>11:00 hs</strong> ⏳</li>
+                <li><strong>R10</strong> — Dom 19 jul → 🇧🇪 Bélgica, Spa — <strong>10:00 hs</strong> ⏳</li>
+                <li><strong>R11</strong> — Dom 26 jul → 🇭🇺 Hungría, Budapest — <strong>10:00 hs</strong> ⏳</li>
+                <li class="summer-break">🌴 <em>Pausa de verano europeo</em></li>
+                <li><strong>R12</strong> — Dom 23 ago → 🇳🇱 Países Bajos, Zandvoort 🏃<em>(Sprint)</em> — <strong>10:00 hs</strong> ⏳</li>
+                <li><strong>R13</strong> — Dom 6 sep → 🇮🇹 Italia, Monza — <strong>10:00 hs</strong> ⏳</li>
+                <li><strong>R14</strong> — Dom 13 sep → 🇪🇸 Madrid <em>(debut)</em> — <strong>10:00 hs</strong> ⏳</li>
+                <li><strong>R15</strong> — Dom 27 sep → 🇦🇿 Azerbaiyán, Bakú — <strong>08:00 hs</strong> ⏳</li>
+                <li><strong>R16</strong> — Dom 11 oct → 🇸🇬 Singapur 🏃<em>(Sprint)</em> — <strong>09:00 hs</strong> ⏳</li>
+                <li><strong>R17</strong> — Dom 25 oct → 🇺🇸 Austin — <strong>17:00 hs</strong> ⏳</li>
+                <li><strong>R18</strong> — Dom 1 nov → 🇲🇽 México, CDMX — <strong>17:00 hs</strong> ⏳</li>
+                <li><strong>R19</strong> — Dom 8 nov → 🇧🇷 Brasil, São Paulo — <strong>14:00 hs</strong> ⏳</li>
+                <li><strong>R20</strong> — Dom 21 nov → 🇺🇸 Las Vegas — <strong>01:00 hs</strong> <em>(madrugada del lunes)</em> ⏳</li>
+                <li><strong>R21</strong> — Dom 29 nov → 🇶🇦 Qatar, Lusail — <strong>13:00 hs</strong> ⏳</li>
+                <li><strong>R22</strong> — Dom 6 dic → 🇦🇪 Abu Dhabi — <strong>10:00 hs</strong> ⏳</li>
+            </ol>
+        </section>
+
+        <section class="card search-card">
+            <h2>Resultados de búsqueda</h2>
+            <ul id="search-results" class="results" aria-live="polite"></ul>
+        </section>
+    </div>
+    <script src="data.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

@@ -216,6 +216,43 @@ p {
     margin-top: 2rem;
 }
 
+.schedule-card {
+    padding: 2rem;
+}
+
+.calendar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.9rem;
+}
+
+.calendar-list li {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1rem 1.1rem;
+    line-height: 1.5;
+}
+
+.calendar-list li strong {
+    color: #ffffff;
+}
+
+.calendar-list li em {
+    color: var(--muted);
+    font-style: normal;
+}
+
+.calendar-list li.summer-break {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 0.98rem;
+    color: #ffd966;
+}
+
 .search-input {
     width: 100%;
     padding: 1rem 1rem;
@@ -260,6 +297,16 @@ p {
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.04);
     padding: 0.75rem;
+}
+
+.team-cell-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    margin-right: 0.6rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.25rem;
 }
 
 .detail-image {
@@ -349,6 +396,31 @@ p {
     display: inline-block;
     margin-left: 0.75rem;
     font-weight: 700;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.search-result-logo {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.3rem;
+}
+
+.search-result-content {
+    display: grid;
+    gap: 0.35rem;
+    flex: 1;
 }
 
 @media (max-width: 980px) {

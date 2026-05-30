@@ -18,9 +18,18 @@ function searcher(query) {
     return [...driverMatches, ...constructorMatches];
 }
 
-function createTeamCell(teamName, code, colorClass) {
+function createTeamCell(teamName, code, colorClass, teamSlug) {
     const span = document.createElement('span');
     span.className = `team-chip ${colorClass}`.trim();
+
+    const teamImage = teamSlug ? getTeamImage(teamSlug) : null;
+    if (teamImage) {
+        const img = document.createElement('img');
+        img.className = 'team-cell-logo';
+        img.src = teamImage;
+        img.alt = `${teamName} logo`;
+        span.appendChild(img);
+    }
 
     const logo = document.createElement('span');
     logo.className = 'logo-badge';
@@ -87,7 +96,7 @@ function renderDriverStandings() {
         nameCell.textContent = driver.name;
 
         const teamCell = document.createElement('td');
-        teamCell.appendChild(createTeamCell(driver.team, driver.code, driver.colorClass));
+        teamCell.appendChild(createTeamCell(driver.team, driver.code, driver.colorClass, driver.teamSlug));
 
         const pointsCell = document.createElement('td');
         pointsCell.textContent = driver.points;
@@ -114,7 +123,7 @@ function renderConstructorStandings() {
         positionCell.textContent = team.position;
 
         const nameCell = document.createElement('td');
-        nameCell.appendChild(createTeamCell(team.name, team.code, team.colorClass));
+        nameCell.appendChild(createTeamCell(team.name, team.code, team.colorClass, team.slug));
 
         const pointsCell = document.createElement('td');
         pointsCell.textContent = team.points;
@@ -153,12 +162,19 @@ function renderSearchResults(results) {
 
     results.forEach(entry => {
         const li = document.createElement('li');
+        li.className = 'search-result-item';
+
         const label = entry.type === 'driver' ? 'Piloto' : 'Escudería';
         const link = entry.type === 'driver' ? `driver.html?slug=${entry.slug}` : `team.html?slug=${entry.slug}`;
+        const imageSrc = entry.type === 'driver' ? getTeamImage(entry.teamSlug) : entry.image;
+
         li.innerHTML = `
-            <strong>${entry.name}</strong>
-            <span class="result-type">${label}</span>
-            <span class="result-points">${entry.points} pts</span>
+            ${imageSrc ? `<img class="search-result-logo" src="${imageSrc}" alt="${entry.name} logo">` : ''}
+            <div class="search-result-content">
+                <strong>${entry.name}</strong>
+                <span class="result-type">${label}</span>
+                <span class="result-points">${entry.points} pts</span>
+            </div>
             <a class="detail-link-inline" href="${link}">Ver mini página</a>
         `;
         resultsList.appendChild(li);
