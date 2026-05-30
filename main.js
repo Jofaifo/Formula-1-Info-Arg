@@ -1,3 +1,8 @@
+function getTeamImage(teamSlug) {
+    const team = window.findConstructorBySlug(teamSlug);
+    return team && team.image ? team.image : null;
+}
+
 function searcher(query) {
     if (!query || typeof query !== 'string') return [];
     const q = query.trim().toLowerCase();
@@ -32,6 +37,15 @@ function createTeamCell(teamName, code, colorClass) {
 function createEntityCard(entity, type) {
     const wrapper = document.createElement('article');
     wrapper.className = 'entity-card';
+
+    const imageSrc = type === 'constructor' ? entity.image : getTeamImage(entity.teamSlug);
+    if (imageSrc) {
+        const img = document.createElement('img');
+        img.className = 'entity-logo';
+        img.src = imageSrc;
+        img.alt = `${entity.name} logo`;
+        wrapper.appendChild(img);
+    }
 
     const badge = document.createElement('span');
     badge.className = `logo-badge ${entity.colorClass}`.trim();
@@ -173,9 +187,13 @@ function renderDriverDetail(slug) {
     title.textContent = driver.name;
     subtitle.textContent = `${driver.team} • ${driver.points} puntos`;
 
+    const team = window.findConstructorBySlug(driver.teamSlug);
+    const teamImage = team && team.image ? `<img class="detail-image" src="${team.image}" alt="${team.name} logo">` : '';
+
     detail.innerHTML = `
         <div class="detail-grid">
             <div class="detail-card-main">
+                ${teamImage}
                 <span class="logo-badge ${driver.colorClass}">${driver.code}</span>
                 <h2>${driver.team}</h2>
                 <p>${driver.bio}</p>
@@ -213,11 +231,13 @@ function renderTeamDetail(slug) {
     title.textContent = team.name;
     subtitle.textContent = `${team.points} puntos • ${team.championships} títulos`;
 
+    const teamImage = team.image ? `<img class="detail-image" src="${team.image}" alt="${team.name} logo">` : '';
     const driverLinks = team.topDrivers.map(name => `<a class="team-link" href="drivers.html#${window.slugify(name)}">${name}</a>`).join('');
 
     detail.innerHTML = `
         <div class="detail-grid">
             <div class="detail-card-main">
+                ${teamImage}
                 <span class="logo-badge ${team.colorClass}">${team.code}</span>
                 <h2>${team.base}</h2>
                 <p>${team.description}</p>
