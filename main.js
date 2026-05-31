@@ -200,34 +200,136 @@ function renderDriverDetail(slug) {
         return;
     }
 
-    title.textContent = driver.name;
-    subtitle.textContent = `${driver.team} • ${driver.points} puntos`;
+    const color = (window.teamColors && window.teamColors[driver.teamSlug]) || '#888';
+    const leader = window.drivers[0];
+    const gap = driver.position === 1 ? 'Líder' : `-${leader.points - driver.points} pts del líder`;
 
-    const team = window.findConstructorBySlug(driver.teamSlug);
-    const teamImage = team && team.image ? `<img class="detail-image" src="${team.image}" alt="${team.name} logo">` : '';
+    // Bandera real
+    const flagHtml = driver.flagImg
+        ? `<img src="${driver.flagImg}" alt="${driver.nationality}" class="detail-flag-img">`
+        : `<span>${driver.flag || ''}</span>`;
+
+    // Foto del piloto
+    const photoHtml = driver.photo
+        ? `<img class="driver-photo" src="${driver.photo}" alt="${driver.name}">`
+        : '';
+
+    // Logo del equipo
+    const teamObj = window.findConstructorBySlug(driver.teamSlug);
+    const teamLogoHtml = teamObj && teamObj.image
+        ? `<img class="detail-team-logo" src="${teamObj.image}" alt="${teamObj.name}">`
+        : '';
+
+    // Tabla de resultados por carrera
+    const racesDone = window.races || [];
+    const medals = { 1: '🥇', 2: '🥈', 3: '🥉' };
+    const raceRows = racesDone.map((race, i) => {
+        const pos = driver.raceResults ? driver.raceResults[i] : null;
+        const posLabel = pos == null
+            ? '<span class="dnf">—</span>'
+            : pos <= 3 ? `${medals[pos]} ${pos}º` : `${pos}º`;
+        const pts = pos && pos >= 1 && pos <= 10 ? [25,18,15,12,10,8,6,4,2,1][pos-1] : 0;
+        const rowClass = pos === 1 ? 'row-win' : (pos && pos <= 3 ? 'row-podium' : '');
+        return `<tr class="${rowClass}">
+            <td>${race.flag} ${race.name}${race.sprint ? ' <em class="sprint-tag">S</em>' : ''}</td>
+            <td class="pos-cell">${posLabel}</td>
+            <td class="pts-mini">${pts > 0 ? '+' + pts : '—'}</td>
+        </tr>`;
+    }).join('');
+
+    // Gráfico SVG puntos acumulados
+    const cumPts = window.getCumulativePoints ? window.getCumulativePoints(driver) : [];
+    let chartHtml = '';
+    if (cumPts.length > 1) {
+        const W = 400, H = 150;
+        const PAD = { top: 12, right: 16, bottom: 28, left: 36 };
+        const iW = W - PAD.left - PAD.right;
+        const iH = H - PAD.top - PAD.bottom;
+        const maxPts = Math.max(...cumPts, 1);
+        const n = cumPts.length;
+        const xS = i => PAD.left + (i / (n - 1)) * iW;
+        const yS = v => PAD.top + iH - (v / maxPts) * iH;
+        const polyPts = cumPts.map((v, i) => `${xS(i)},${yS(v)}`).join(' ');
+        const areaPts = [`${xS(0)},${PAD.top + iH}`,
+            ...cumPts.map((v, i) => `${xS(i)},${yS(v)}`),
+            `${xS(n - 1)},${PAD.top + iH}`].join(' ');
+        const xLabels = racesDone.map((r, i) =>
+            `<text x="${xS(i)}" y="${H - 4}" text-anchor="middle" fill="#555" font-size="9">${r.short}</text>`
+        ).join('');
+        const yLines = [0, 0.5, 1].map(t => {
+            const y = PAD.top + iH - t * iH;
+            return `<line x1="${PAD.left}" x2="${PAD.left + iW}" y1="${y}" y2="${y}" stroke="rgba(255,255,255,0.06)"/>
+                    <text x="${PAD.left - 4}" y="${y + 4}" text-anchor="end" fill="#555" font-size="9">${Math.round(t * maxPts)}</text>`;
+        }).join('');
+        const dots = cumPts.map((v, i) =>
+            `<circle cx="${xS(i)}" cy="${yS(v)}" r="4" fill="${color}" stroke="#111" stroke-width="2"><title>${racesDone[i]?.name}: ${v} pts</title></circle>`
+        ).join('');
+        chartHtml = `<div class="chart-wrapper">
+            <h4 class="chart-title">Evolución de puntos</h4>
+            <svg viewBox="0 0 ${W} ${H}" class="points-chart">
+                <defs><linearGradient id="ag-${driver.slug}" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="${color}" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+                </linearGradient></defs>
+                ${yLines}${xLabels}
+                <polygon points="${areaPts}" fill="url(#ag-${driver.slug})"/>
+                <polyline points="${polyPts}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>
+                ${dots}
+            </svg></div>`;
+    }
+
+    title.innerHTML = `${flagHtml} ${driver.name}`;
+    subtitle.textContent = `${driver.team} · ${driver.points} pts · P${driver.position}`;
 
     detail.innerHTML = `
         <div class="detail-grid">
             <div class="detail-card-main">
-                ${teamImage}
-                <span class="logo-badge ${driver.colorClass}">${driver.code}</span>
-                <h2>${driver.team}</h2>
-                <p>${driver.bio}</p>
-                <ul class="detail-list">
-                    <li><strong>Posición:</strong> ${driver.position}</li>
-                    <li><strong>País:</strong> ${driver.nationality}</li>
-                    <li><strong>Edad:</strong> ${driver.age} años</li>
-                    <li><strong>Victorias:</strong> ${driver.wins}</li>
-                    <li><strong>Podios:</strong> ${driver.podiums}</li>
-                </ul>
+                <div class="driver-hero">
+                    ${photoHtml}
+                    <div class="driver-hero-info">
+                        ${teamLogoHtml}
+                        <div class="driver-stats-row">
+                            <div class="driver-stat-pill" style="border-color:${color}">
+                                <span class="stat-pill-num">${driver.wins}</span>
+                                <span class="stat-pill-label">Victorias</span>
+                            </div>
+                            <div class="driver-stat-pill" style="border-color:${color}">
+                                <span class="stat-pill-num">${driver.podiums}</span>
+                                <span class="stat-pill-label">Podios</span>
+                            </div>
+                            <div class="driver-stat-pill" style="border-color:${color}">
+                                <span class="stat-pill-num">${driver.poles || 0}</span>
+                                <span class="stat-pill-label">Poles</span>
+                            </div>
+                            <div class="driver-stat-pill" style="border-color:${color}">
+                                <span class="stat-pill-num">${driver.fastestLaps || 0}</span>
+                                <span class="stat-pill-label">V. Rápidas</span>
+                            </div>
+                        </div>
+                        <ul class="detail-list">
+                            <li><strong>Posición:</strong> ${driver.position}º <span class="muted-text">(${gap})</span></li>
+                            <li><strong>Puntos:</strong> ${driver.points}</li>
+                            <li><strong>Nacionalidad:</strong> ${driver.nationality}</li>
+                            <li><strong>Edad:</strong> ${driver.age} años</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="driver-bio">${driver.bio}</p>
+                ${racesDone.length ? `
+                <div class="race-results-table">
+                    <h4>Resultados 2026</h4>
+                    <table class="results-mini-table">
+                        <thead><tr><th>Carrera</th><th>Pos.</th><th>Pts.</th></tr></thead>
+                        <tbody>${raceRows}</tbody>
+                    </table>
+                </div>` : ''}
             </div>
             <div class="detail-aside">
-                <h3>Equipo</h3>
-                <a class="team-link" href="team.html?slug=${driver.teamSlug}">${driver.team}</a>
-                <p>Abre la mini página de su escudería para ver detalles del equipo, base y resultados.</p>
+                ${chartHtml}
+                <h3 style="margin-top:1.25rem">Equipo</h3>
+                <a class="team-link" href="team.html?slug=${driver.teamSlug}" style="color:${color}">${driver.team} →</a>
             </div>
-        </div>
-    `;
+        </div>`;
 }
 
 function renderTeamDetail(slug) {
@@ -244,34 +346,65 @@ function renderTeamDetail(slug) {
         return;
     }
 
-    title.textContent = team.name;
-    subtitle.textContent = `${team.points} puntos • ${team.championships} títulos`;
+    const color = (window.teamColors && window.teamColors[team.slug]) || '#888';
+    const leader = window.constructors[0];
+    const gap = team.position === 1 ? 'Líder' : `-${leader.points - team.points} pts del líder`;
 
-    const teamImage = team.image ? `<img class="detail-image" src="${team.image}" alt="${team.name} logo">` : '';
-    const driverLinks = team.topDrivers.map(name => `<a class="team-link" href="drivers.html#${window.slugify(name)}">${name}</a>`).join('');
+    const teamImage = team.image
+        ? `<img class="detail-image" src="${team.image}" alt="${team.name} logo">`
+        : '';
+
+    // Banderas origen y base
+    const originFlagHtml = team.originFlag
+        ? `<img src="${team.originFlag}" class="detail-flag-img" alt=""> ${team.origin}`
+        : team.origin || '—';
+    const baseFlagHtml = team.baseFlag
+        ? `<img src="${team.baseFlag}" class="detail-flag-img" alt=""> ${team.base}`
+        : team.base || '—';
+
+    // Pilotos con foto, bandera y puntos
+    const driverCards = team.topDrivers.map(name => {
+        const d = window.drivers.find(x => x.name === name);
+        if (!d) return '';
+        const dColor = (window.teamColors && window.teamColors[d.teamSlug]) || '#888';
+        const pct = team.points > 0 ? Math.round((d.points / team.points) * 100) : 0;
+        const dFlag = d.flagImg ? `<img src="${d.flagImg}" class="detail-flag-img" alt="">` : (d.flag || '');
+        const dPhoto = d.photo ? `<img src="${d.photo}" class="driver-card-photo" alt="${d.name}">` : '';
+        return `<div class="team-driver-card">
+            ${dPhoto}
+            <div class="team-driver-info">
+                <div class="team-driver-name">${dFlag} <a href="driver.html?slug=${d.slug}" style="color:${dColor}">${d.name}</a></div>
+                <div class="driver-bar-track" style="margin-top:0.4rem">
+                    <div class="driver-bar-fill" style="width:${pct}%;background:${dColor}"></div>
+                </div>
+                <div class="team-driver-pts"><strong>${d.points}</strong> pts</div>
+            </div>
+        </div>`;
+    }).join('');
+
+    title.innerHTML = `${team.flagImg ? `<img src="${team.flagImg}" class="detail-flag-img" alt="">` : (team.flag || '')} ${team.name}`;
+    subtitle.textContent = `${team.points} pts · P${team.position} · ${team.championships} campeonatos`;
 
     detail.innerHTML = `
         <div class="detail-grid">
             <div class="detail-card-main">
                 ${teamImage}
-                <span class="logo-badge ${team.colorClass}">${team.code}</span>
-                <h2>${team.base}</h2>
-                <p>${team.description}</p>
+                <p class="driver-bio">${team.description}</p>
                 <ul class="detail-list">
+                    <li><strong>Posición:</strong> ${team.position}º <span class="muted-text">(${gap})</span></li>
+                    <li><strong>Puntos:</strong> ${team.points}</li>
+                    <li><strong>Origen:</strong> ${originFlagHtml}</li>
+                    <li><strong>Base:</strong> ${baseFlagHtml}</li>
                     <li><strong>Team Principal:</strong> ${team.teamPrincipal}</li>
                     <li><strong>Motor:</strong> ${team.engine}</li>
                     <li><strong>Campeonatos:</strong> ${team.championships}</li>
-                    <li><strong>Pilotos principales:</strong></li>
-                    ${team.topDrivers.map(driver => `<li>${driver}</li>`).join('')}
                 </ul>
             </div>
             <div class="detail-aside">
-                <h3>Pilotos destacados</h3>
-                <p>Abre las mini páginas individuales para conocer su rendimiento.</p>
-                ${driverLinks}
+                <h3>Pilotos</h3>
+                <div class="team-drivers-grid">${driverCards}</div>
             </div>
-        </div>
-    `;
+        </div>`;
 }
 
 function initSearcher() {
@@ -286,36 +419,71 @@ function initSearcher() {
     renderSearchResults([]);
 }
 
+function renderChampionshipLeaders() {
+    const dEl = document.getElementById('driver-leader');
+    const tEl = document.getElementById('team-leader');
+    if (dEl && window.drivers && window.drivers.length) {
+        const d = window.drivers[0];
+        const color = (window.teamColors && window.teamColors[d.teamSlug]) || '#888';
+        const flagHtml = d.flagImg ? `<img src="${d.flagImg}" class="detail-flag-img" alt="">` : (d.flag || '');
+        dEl.innerHTML = `
+            <div class="leader-label">Líder de pilotos</div>
+            <div class="leader-name" style="color:${color}">${flagHtml} ${d.name}</div>
+            <div class="leader-detail">${d.team} · <strong>${d.points} pts</strong></div>
+            <a class="detail-link" href="driver.html?slug=${d.slug}">Ver →</a>`;
+    }
+    if (tEl && window.constructors && window.constructors.length) {
+        const t = window.constructors[0];
+        const color = (window.teamColors && window.teamColors[t.slug]) || '#888';
+        const flagHtml = t.flagImg ? `<img src="${t.flagImg}" class="detail-flag-img" alt="">` : (t.flag || '');
+        tEl.innerHTML = `
+            <div class="leader-label">Líder de constructores</div>
+            <div class="leader-name" style="color:${color}">${flagHtml} ${t.name}</div>
+            <div class="leader-detail"><strong>${t.points} pts</strong></div>
+            <a class="detail-link" href="team.html?slug=${t.slug}">Ver →</a>`;
+    }
+}
+
 function initPage() {
-    if (document.body.classList.contains('page-home')) {
+    const body = document.body;
+
+    if (body.classList.contains('page-home')) {
+        renderChampionshipLeaders();
+        renderCountdown();
+        return;
+    }
+
+    if (body.classList.contains('page-search')) {
         initSearcher();
         return;
     }
 
-    if (document.body.classList.contains('page-drivers')) {
+    if (body.classList.contains('page-calendar')) {
+        return;
+    }
+
+    if (body.classList.contains('page-drivers')) {
         renderDriverStandings();
         renderCards('driver-cards', window.drivers, 'driver');
         initSearcher();
         return;
     }
 
-    if (document.body.classList.contains('page-teams')) {
+    if (body.classList.contains('page-teams')) {
         renderConstructorStandings();
         renderCards('team-cards', window.constructors, 'constructor');
         initSearcher();
         return;
     }
 
-    if (document.body.classList.contains('page-driver-detail')) {
-        const slug = getSlugFromQuery();
-        renderDriverDetail(slug);
+    if (body.classList.contains('page-driver-detail')) {
+        renderDriverDetail(getSlugFromQuery());
         initSearcher();
         return;
     }
 
-    if (document.body.classList.contains('page-team-detail')) {
-        const slug = getSlugFromQuery();
-        renderTeamDetail(slug);
+    if (body.classList.contains('page-team-detail')) {
+        renderTeamDetail(getSlugFromQuery());
         initSearcher();
         return;
     }

@@ -1274,3 +1274,114 @@ p { margin: 0 0 1rem; color: var(--muted); }
     .fox-op { flex-direction: column; gap: 0.2rem; }
     .fox-op-name { min-width: unset; }
 }
+
+/* ─── FOTO Y BANDERA EN DETALLE DE PILOTO ────────────────────────────────────── */
+.detail-flag-img {
+    width: 20px;
+    height: 14px;
+    object-fit: cover;
+    border-radius: 2px;
+    vertical-align: middle;
+    margin-right: 0.3rem;
+}
+
+.driver-hero {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+}
+
+.driver-photo {
+    width: 160px;
+    height: auto;
+    border-radius: 14px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.08);
+}
+
+.driver-hero-info {
+    display: grid;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.detail-team-logo {
+    width: 90px;
+    height: 36px;
+    object-fit: contain;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.04);
+    padding: 0.25rem 0.5rem;
+}
+
+/* ─── TARJETAS DE PILOTOS EN DETALLE DE EQUIPO ───────────────────────────────── */
+.team-drivers-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.team-driver-card {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    padding: 0.75rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+}
+
+.driver-card-photo {
+    width: 64px;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.team-driver-info {
+    flex: 1;
+    display: grid;
+    gap: 0.4rem;
+}
+
+.team-driver-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.team-driver-name a {
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.team-driver-name a:hover { text-decoration: underline; }
+
+.driver-bar-track {
+    height: 5px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.driver-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.8s ease;
+}
+
+.team-driver-pts {
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+.team-driver-pts strong { color: #fff; }
+
+/* ─── RESPONSIVE FOTO PILOTO ─────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+    .driver-hero { flex-direction: column; }
+    .driver-photo { width: 100%; max-width: 280px; }
+}
