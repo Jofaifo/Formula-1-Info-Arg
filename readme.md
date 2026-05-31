@@ -16,10 +16,10 @@ Sitio en vivo:
 - https://jofaifo.github.io/Formula-1-Puntajes-Prueba/
 
 Créditos:
-- GitHub Copilot
-- Claude AI
-- banderas-mundo.es
-- Formula 1
-- FormulaArg
+- [GitHub Copilot](https://github.com/copilot)
+- [Claude AI](https://claude.ai/)
+- [banderas-mundo.es](https://banderas-mundo.es)
+- [Formula 1](https://www.formula1.com/)
+- [FormulaArg](https://www.instagram.com/formulaargok/)
 
 Este repositorio es de carácter experimental y sirve como demostración de manejo sencillo de datos y generación de resultados para pruebas.
