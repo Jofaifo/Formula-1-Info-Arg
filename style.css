@@ -725,3 +725,230 @@ p { margin: 0 0 1rem; color: var(--muted); }
     .hero-stats { grid-template-columns: repeat(2, 1fr); }
     .driver-bar-row { grid-template-columns: 1fr 1.5fr auto; }
 }
+
+/* ─── GUÍA DE TRANSMISIONES ─────────────────────────────────────────────────── */
+.tv-legend-card { padding: 1.5rem 1.75rem; }
+
+.tv-legend {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 1rem;
+}
+
+.tv-legend-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1rem 1.25rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+}
+
+.tv-logo-lg {
+    width: 72px;
+    height: 40px;
+    object-fit: contain;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    padding: 0.3rem 0.5rem;
+}
+
+.tv-logo-sm {
+    width: 36px;
+    height: 20px;
+    object-fit: contain;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.08);
+    padding: 0.15rem 0.3rem;
+    flex-shrink: 0;
+}
+
+.tv-legend-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.25rem 0;
+    color: #ccc;
+    font-size: 0.88rem;
+}
+
+.tv-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.55rem;
+    border-radius: 5px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.tv-badge.live {
+    background: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.tv-badge.delayed {
+    background: rgba(251, 146, 60, 0.15);
+    color: #fb923c;
+    border: 1px solid rgba(251, 146, 60, 0.3);
+}
+
+/* ─── CHIPS DE TV EN CADA CARRERA ───────────────────────────────────────────── */
+.tv-chips {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.tv-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.5rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+}
+
+/* ─── HORARIOS EN PISTA (SCHEDULE) ──────────────────────────────────────────── */
+.schedule-legend {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.race-main-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.race-schedule {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: grid;
+    gap: 0.3rem;
+    width: 100%;
+}
+
+.sched-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.83rem;
+    color: var(--muted);
+    padding: 0.2rem 0;
+}
+
+.sched-row.race-row {
+    color: #fff;
+    font-weight: 600;
+}
+
+.sched-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.sched-dot.fp           { background: #60a5fa; }   /* azul — práctica libre */
+.sched-dot.qual         { background: #facc15; }   /* amarillo — clasificación */
+.sched-dot.sprint-sched { background: #f97316; }   /* naranja — sprint */
+.sched-dot.race-dot     { background: #4ade80; }   /* verde — carrera */
+
+.sched-label { flex: 1; }
+
+.sched-time {
+    font-variant-numeric: tabular-nums;
+    color: #e8e8e8;
+    white-space: nowrap;
+}
+
+/* Ajuste al nuevo layout de las filas del calendario */
+.calendar-list li {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+/* Las carreras disputadas no muestran schedule */
+.race-done .race-main-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+@media (max-width: 600px) {
+    .tv-legend-item { flex-direction: column; gap: 0.75rem; }
+    .tv-logo-lg { width: 56px; height: 32px; }
+    .sched-time { font-size: 0.78rem; }
+}
+
+/* ─── CATEGORÍAS DE APOYO ────────────────────────────────────────────────────── */
+.support-legend {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.support-legend h3 { font-size: 0.85rem; margin-bottom: 0.6rem; }
+
+.support-legend-chips {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.support-note { font-size: 0.8rem; color: var(--muted); margin: 0; }
+
+.support-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.55rem;
+    border-radius: 5px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.support-chip.f2 {
+    background: rgba(0, 163, 224, 0.15);
+    color: #00a3e0;
+    border: 1px solid rgba(0, 163, 224, 0.3);
+}
+
+.support-chip.f3 {
+    background: rgba(255, 0, 60, 0.15);
+    color: #ff3c5a;
+    border: 1px solid rgba(255, 0, 60, 0.3);
+}
+
+.support-chip.fa {
+    background: rgba(180, 120, 255, 0.15);
+    color: #b478ff;
+    border: 1px solid rgba(180, 120, 255, 0.3);
+}
+
+.support-chips-row {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+    flex-wrap: wrap;
+}

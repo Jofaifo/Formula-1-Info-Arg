@@ -12,7 +12,7 @@
             <div>
                 <span class="season-label">Calendario 2026</span>
                 <h1>Fechas y circuitos</h1>
-                <p>Revisa todas las rondas confirmadas, ganadores y horarios en hora argentina.</p>
+                <p>Todos los horarios en hora argentina. Disney+ transmite en vivo todos los GPs; Fox Sports indica si es en vivo o diferido.</p>
             </div>
             <div class="header-actions">
                 <form class="search-form" id="top-search-form">
@@ -27,149 +27,483 @@
             </div>
         </header>
 
+        <!-- Leyenda de transmisiones -->
+        <section class="card tv-legend-card">
+            <h2>Guía de transmisiones</h2>
+            <div class="tv-legend">
+                <div class="tv-legend-item">
+                    <img src="img/Fox Sport.png" alt="Fox Sports" class="tv-logo-lg">
+                    <div>
+                        <div class="tv-legend-row"><span class="tv-badge live">EN VIVO</span> Transmite la carrera en vivo — 18 de 24 GPs</div>
+                        <div class="tv-legend-row"><span class="tv-badge delayed">DIFERIDO</span> No transmite en vivo: emite la carrera después que termina, sin resultado en pantalla</div>
+                    </div>
+                </div>
+                <div class="tv-legend-item">
+                    <img src="img/Disney+.png" alt="Disney+" class="tv-logo-lg">
+                    <div>
+                        <div class="tv-legend-row"><span class="tv-badge live">EN VIVO</span> Transmite en vivo y sin cortes los 24 Grandes Premios de la temporada</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Leyenda categorías de apoyo -->
+            <div class="support-legend">
+                <h3>Categorías de apoyo</h3>
+                <div class="support-legend-chips">
+                    <span class="support-chip f2">F2</span>
+                    <span class="support-chip f3">F3</span>
+                    <span class="support-chip fa">F1 Academy</span>
+                </div>
+                <p class="support-note">Indican qué categorías de soporte comparten el fin de semana con la F1 en cada Gran Premio.</p>
+            </div>
+        </section>
+
         <section class="card schedule-card">
             <h2>Calendario de la temporada</h2>
+            <div class="schedule-legend">
+                <span class="sched-dot fp"></span> Práctica libre &nbsp;
+                <span class="sched-dot qual"></span> Clasificación &nbsp;
+                <span class="sched-dot sprint-sched"></span> Sprint &nbsp;
+                <span class="sched-dot race-dot"></span> Carrera
+            </div>
+
             <ol class="calendar-list">
-                <!-- R1–R5: disputadas -->
+
+                <!-- ══ R1: AUSTRALIA ══ -->
                 <li class="race-done">
-                    <span class="race-round">R1</span>
-                    <span class="race-info">Dom 8 mar · 🇦🇺 Australia, Melbourne</span>
-                    <span class="race-winner">🏆 George Russell</span>
-                    <span class="race-status done">✅</span>
-                </li>
-                <li class="race-done">
-                    <span class="race-round">R2</span>
-                    <span class="race-info">Dom 15 mar · 🇨🇳 China, Shanghai <em class="sprint-tag">Sprint</em></span>
-                    <span class="race-winner">🏆 Kimi Antonelli</span>
-                    <span class="race-status done">✅</span>
-                </li>
-                <li class="race-done">
-                    <span class="race-round">R3</span>
-                    <span class="race-info">Dom 29 mar · 🇯🇵 Japón, Suzuka</span>
-                    <span class="race-winner">🏆 Kimi Antonelli</span>
-                    <span class="race-status done">✅</span>
-                </li>
-                <li class="race-done">
-                    <span class="race-round">R4</span>
-                    <span class="race-info">Dom 3 may · 🇺🇸 Miami <em class="sprint-tag">Sprint</em> · <strong>14:00 hs ARG</strong></span>
-                    <span class="race-winner">🏆 Lando Norris</span>
-                    <span class="race-status done">✅</span>
-                </li>
-                <li class="race-done">
-                    <span class="race-round">R5</span>
-                    <span class="race-info">Dom 24 may · 🇨🇦 Canadá, Montreal <em class="sprint-tag">Sprint</em> · <strong>17:00 hs ARG</strong></span>
-                    <span class="race-winner">🏆 Kimi Antonelli</span>
-                    <span class="race-status done">✅</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R1</span>
+                        <span class="race-info">Dom 8 mar · 🇦🇺 <strong>Australia</strong>, Melbourne</span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span><span class="support-chip f3">F3</span></div>
+                        <span class="race-winner">🏆 George Russell</span>
+                        <span class="race-status done">✅</span>
+                    </div>
                 </li>
 
-                <!-- R6: próxima -->
+                <!-- ══ R2: CHINA ══ -->
+                <li class="race-done">
+                    <div class="race-main-row">
+                        <span class="race-round">R2</span>
+                        <span class="race-info">Dom 15 mar · 🇨🇳 <strong>China</strong>, Shanghai <em class="sprint-tag">Sprint</em></span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span></div>
+                        <span class="race-winner">🏆 Kimi Antonelli</span>
+                        <span class="race-status done">✅</span>
+                    </div>
+                </li>
+
+                <!-- ══ R3: JAPÓN ══ -->
+                <li class="race-done">
+                    <div class="race-main-row">
+                        <span class="race-round">R3</span>
+                        <span class="race-info">Dom 29 mar · 🇯🇵 <strong>Japón</strong>, Suzuka</span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span></div>
+                        <span class="race-winner">🏆 Kimi Antonelli</span>
+                        <span class="race-status done">✅</span>
+                    </div>
+                </li>
+
+                <!-- ══ R4: BAHREIN ══ -->
+                <li class="race-done">
+                    <div class="race-main-row">
+                        <span class="race-round">R4</span>
+                        <span class="race-info">Dom 12 abr · 🇧🇭 <strong>Bahrein</strong></span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span><span class="support-chip f3">F3</span></div>
+                        <span class="race-winner">🏆 —</span>
+                        <span class="race-status done">✅</span>
+                    </div>
+                </li>
+
+                <!-- ══ R5: ARABIA SAUDITA ══ -->
+                <li class="race-done">
+                    <div class="race-main-row">
+                        <span class="race-round">R5</span>
+                        <span class="race-info">Dom 19 abr · 🇸🇦 <strong>Arabia Saudita</strong>, Jeddah</span>
+                        <div class="support-chips-row"></div>
+                        <span class="race-winner">🏆 —</span>
+                        <span class="race-status done">✅</span>
+                    </div>
+                </li>
+
+                <!-- ══ R6: MIAMI ══ -->
+                <li class="race-done">
+                    <div class="race-main-row">
+                        <span class="race-round">R6</span>
+                        <span class="race-info">Dom 3 may · 🇺🇸 <strong>Miami</strong> <em class="sprint-tag">Sprint</em> · <strong>14:00 hs ARG</strong></span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span></div>
+                        <span class="race-winner">🏆 Lando Norris</span>
+                        <span class="race-status done">✅</span>
+                    </div>
+                </li>
+
+                <!-- ══ R7: CANADÁ ══ -->
+                <li class="race-done">
+                    <div class="race-main-row">
+                        <span class="race-round">R7</span>
+                        <span class="race-info">Dom 24 may · 🇨🇦 <strong>Canadá</strong>, Montreal <em class="sprint-tag">Sprint</em> · <strong>17:00 hs ARG</strong></span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span></div>
+                        <span class="race-winner">🏆 Kimi Antonelli</span>
+                        <span class="race-status done">✅</span>
+                    </div>
+                </li>
+
+                <!-- ══ R8: MÓNACO — PRÓXIMA ══ -->
                 <li class="race-next">
-                    <span class="race-round">R6</span>
-                    <span class="race-info">Dom 7 jun · 🇲🇨 Mónaco, Montecarlo · <strong>10:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status next">🔜 PRÓXIMA</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R8</span>
+                        <span class="race-info">🇲🇨 <strong>GP de Mónaco</strong>, Montecarlo</span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span><span class="support-chip f3">F3</span><span class="support-chip fa">F1 Ac.</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge delayed">DIFERIDO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status next">🔜 PRÓXIMA</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Jue 5 jun · 14:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 2</span><span class="sched-time">Vie 6 jun · 13:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 3</span><span class="sched-time">Sáb 7 jun · 12:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 7 jun · 16:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 8 jun · 10:00 hs</span></div>
+                    </div>
                 </li>
 
-                <!-- R7–R22: pendientes -->
+                <!-- ══ R9: BARCELONA ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R7</span>
-                    <span class="race-info">Dom 14 jun · 🇪🇸 España, Barcelona · <strong>10:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R9</span>
+                        <span class="race-info">🇪🇸 <strong>GP de Barcelona</strong>, Catalunya</span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span><span class="support-chip f3">F3</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 12 jun · 14:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 2</span><span class="sched-time">Vie 12 jun · 18:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 3</span><span class="sched-time">Sáb 13 jun · 13:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 13 jun · 17:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 14 jun · 10:00 hs</span></div>
+                    </div>
                 </li>
+
+                <!-- ══ R10: AUSTRIA ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R8</span>
-                    <span class="race-info">Dom 28 jun · 🇦🇹 Austria, Spielberg · <strong>10:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R10</span>
+                        <span class="race-info">🇦🇹 <strong>GP de Austria</strong>, Spielberg</span>
+                        <div class="support-chips-row"><span class="support-chip f3">F3</span><span class="support-chip fa">F1 Ac.</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 26 jun · 14:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 2</span><span class="sched-time">Vie 26 jun · 18:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 3</span><span class="sched-time">Sáb 27 jun · 13:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 27 jun · 17:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 28 jun · 10:00 hs</span></div>
+                    </div>
                 </li>
+
+                <!-- ══ R11: GRAN BRETAÑA (SPRINT) ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R9</span>
-                    <span class="race-info">Dom 5 jul · 🇬🇧 Gran Bretaña, Silverstone <em class="sprint-tag">Sprint</em> · <strong>11:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R11</span>
+                        <span class="race-info">🇬🇧 <strong>GP de Gran Bretaña</strong>, Silverstone <em class="sprint-tag">Sprint</em></span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span><span class="support-chip f3">F3</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge delayed">DIFERIDO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 3 jul · 14:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasif. Sprint</span><span class="sched-time">Vie 3 jul · 18:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot sprint-sched"></span><span class="sched-label">Carrera Sprint</span><span class="sched-time">Sáb 4 jul · 12:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 4 jul · 16:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 5 jul · 11:00 hs</span></div>
+                    </div>
                 </li>
+
+                <!-- ══ R12: BÉLGICA ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R10</span>
-                    <span class="race-info">Dom 19 jul · 🇧🇪 Bélgica, Spa · <strong>10:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R12</span>
+                        <span class="race-info">🇧🇪 <strong>GP de Bélgica</strong>, Spa-Francorchamps</span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span><span class="support-chip f3">F3</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 17 jul · 14:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 2</span><span class="sched-time">Vie 17 jul · 18:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 3</span><span class="sched-time">Sáb 18 jul · 13:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 18 jul · 17:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 19 jul · 10:00 hs</span></div>
+                    </div>
                 </li>
+
+                <!-- ══ R13: HUNGRÍA ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R11</span>
-                    <span class="race-info">Dom 26 jul · 🇭🇺 Hungría, Budapest · <strong>10:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R13</span>
+                        <span class="race-info">🇭🇺 <strong>GP de Hungría</strong>, Budapest</span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span><span class="support-chip f3">F3</span><span class="support-chip fa">F1 Ac.</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 24 jul · 14:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 2</span><span class="sched-time">Vie 24 jul · 18:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 3</span><span class="sched-time">Sáb 25 jul · 13:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 25 jul · 17:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 26 jul · 10:00 hs</span></div>
+                    </div>
                 </li>
 
                 <li class="summer-break">🌴 <em>Pausa de verano europeo</em></li>
 
+                <!-- ══ R14: PAÍSES BAJOS (SPRINT) ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R12</span>
-                    <span class="race-info">Dom 23 ago · 🇳🇱 Países Bajos, Zandvoort <em class="sprint-tag">Sprint</em> · <strong>10:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R14</span>
+                        <span class="race-info">🇳🇱 <strong>GP de Países Bajos</strong>, Zandvoort <em class="sprint-tag">Sprint</em></span>
+                        <div class="support-chips-row"><span class="support-chip fa">F1 Ac.</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge delayed">DIFERIDO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 21 ago · 14:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasif. Sprint</span><span class="sched-time">Vie 21 ago · 18:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot sprint-sched"></span><span class="sched-label">Carrera Sprint</span><span class="sched-time">Sáb 22 ago · 12:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 22 ago · 16:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 23 ago · 10:00 hs</span></div>
+                    </div>
                 </li>
+
+                <!-- ══ R15: ITALIA ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R13</span>
-                    <span class="race-info">Dom 6 sep · 🇮🇹 Italia, Monza · <strong>10:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R15</span>
+                        <span class="race-info">🇮🇹 <strong>GP de Italia</strong>, Monza</span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span><span class="support-chip f3">F3</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge delayed">DIFERIDO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 4 sep · 14:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 2</span><span class="sched-time">Vie 4 sep · 18:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 3</span><span class="sched-time">Sáb 5 sep · 13:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 5 sep · 17:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 6 sep · 10:00 hs</span></div>
+                    </div>
                 </li>
+
+                <!-- ══ R16: ESPAÑA (MADRID) ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R14</span>
-                    <span class="race-info">Dom 13 sep · 🇪🇸 Madrid <em class="debut-tag">debut</em> · <strong>10:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R16</span>
+                        <span class="race-info">🇪🇸 <strong>GP de España</strong>, Madrid <em class="debut-tag">debut</em></span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span><span class="support-chip f3">F3</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 11 sep · 14:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 2</span><span class="sched-time">Vie 11 sep · 18:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 3</span><span class="sched-time">Sáb 12 sep · 13:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 12 sep · 17:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 13 sep · 10:00 hs</span></div>
+                    </div>
                 </li>
+
+                <!-- ══ R17: AZERBAIYÁN ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R15</span>
-                    <span class="race-info">Dom 27 sep · 🇦🇿 Azerbaiyán, Bakú · <strong>08:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R17</span>
+                        <span class="race-info">🇦🇿 <strong>GP de Azerbaiyán</strong>, Bakú</span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span><span class="support-chip f3">F3</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 25 sep · 09:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 2</span><span class="sched-time">Vie 25 sep · 13:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 3</span><span class="sched-time">Sáb 26 sep · 09:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 26 sep · 13:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 27 sep · 08:00 hs</span></div>
+                    </div>
                 </li>
+
+                <!-- ══ R18: SINGAPUR (SPRINT) ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R16</span>
-                    <span class="race-info">Dom 11 oct · 🇸🇬 Singapur <em class="sprint-tag">Sprint</em> · <strong>09:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R18</span>
+                        <span class="race-info">🇸🇬 <strong>GP de Singapur</strong>, Marina Bay <em class="sprint-tag">Sprint</em></span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge delayed">DIFERIDO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 9 oct · 10:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasif. Sprint</span><span class="sched-time">Vie 9 oct · 14:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot sprint-sched"></span><span class="sched-label">Carrera Sprint</span><span class="sched-time">Sáb 10 oct · 10:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 10 oct · 14:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 11 oct · 09:00 hs</span></div>
+                    </div>
                 </li>
+
+                <!-- ══ R19: ESTADOS UNIDOS ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R17</span>
-                    <span class="race-info">Dom 25 oct · 🇺🇸 Austin · <strong>17:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R19</span>
+                        <span class="race-info">🇺🇸 <strong>GP de EE.UU.</strong>, Austin</span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span><span class="support-chip f3">F3</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 23 oct · 16:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 2</span><span class="sched-time">Vie 23 oct · 20:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 3</span><span class="sched-time">Sáb 24 oct · 16:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 24 oct · 20:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 25 oct · 17:00 hs</span></div>
+                    </div>
                 </li>
+
+                <!-- ══ R20: MÉXICO ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R18</span>
-                    <span class="race-info">Dom 1 nov · 🇲🇽 México, CDMX · <strong>17:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R20</span>
+                        <span class="race-info">🇲🇽 <strong>GP de México</strong>, CDMX</span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 30 oct · 16:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 2</span><span class="sched-time">Vie 30 oct · 20:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 3</span><span class="sched-time">Sáb 31 oct · 16:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 31 oct · 20:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 1 nov · 17:00 hs</span></div>
+                    </div>
                 </li>
+
+                <!-- ══ R21: BRASIL ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R19</span>
-                    <span class="race-info">Dom 8 nov · 🇧🇷 Brasil, Interlagos · <strong>14:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R21</span>
+                        <span class="race-info">🇧🇷 <strong>GP de Brasil</strong>, Interlagos</span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span><span class="support-chip f3">F3</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 6 nov · 14:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 2</span><span class="sched-time">Vie 6 nov · 18:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 3</span><span class="sched-time">Sáb 7 nov · 13:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 7 nov · 17:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 8 nov · 14:00 hs</span></div>
+                    </div>
                 </li>
+
+                <!-- ══ R22: LAS VEGAS ══ -->
                 <li class="race-upcoming race-latenight">
-                    <span class="race-round">R20</span>
-                    <span class="race-info">Dom 21 nov · 🇺🇸 Las Vegas Strip · <strong>01:00 hs ARG</strong> <em class="latenight-tag">madrugada lunes</em></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R22</span>
+                        <span class="race-info">🇺🇸 <strong>GP de Las Vegas</strong> <em class="latenight-tag">madrugada lunes</em></span>
+                        <div class="support-chips-row"></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Jue 19 nov · 07:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 2</span><span class="sched-time">Vie 20 nov · 04:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 3</span><span class="sched-time">Sáb 21 nov · 04:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 21 nov · 07:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 22 nov · 01:00 hs</span></div>
+                    </div>
                 </li>
+
+                <!-- ══ R23: QATAR ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R21</span>
-                    <span class="race-info">Dom 29 nov · 🇶🇦 Qatar, Lusail · <strong>13:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R23</span>
+                        <span class="race-info">🇶🇦 <strong>GP de Qatar</strong>, Lusail</span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge delayed">DIFERIDO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 27 nov · 11:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 2</span><span class="sched-time">Vie 27 nov · 15:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 3</span><span class="sched-time">Sáb 28 nov · 11:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 28 nov · 15:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 29 nov · 13:00 hs</span></div>
+                    </div>
                 </li>
+
+                <!-- ══ R24: ABU DHABI ══ -->
                 <li class="race-upcoming">
-                    <span class="race-round">R22</span>
-                    <span class="race-info">Dom 6 dic · 🇦🇪 Abu Dhabi, Yas Marina · <strong>10:00 hs ARG</strong></span>
-                    <span class="race-tv">📺 Fox Sports / Disney+</span>
-                    <span class="race-status">⏳</span>
+                    <div class="race-main-row">
+                        <span class="race-round">R24</span>
+                        <span class="race-info">🇦🇪 <strong>GP de Abu Dhabi</strong>, Yas Marina</span>
+                        <div class="support-chips-row"><span class="support-chip f2">F2</span><span class="support-chip f3">F3</span></div>
+                        <div class="tv-chips">
+                            <span class="tv-chip"><img src="img/Fox Sport.png" alt="Fox" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                            <span class="tv-chip"><img src="img/Disney+.png" alt="Disney+" class="tv-logo-sm"> <span class="tv-badge live">EN VIVO</span></span>
+                        </div>
+                        <span class="race-status">⏳</span>
+                    </div>
+                    <div class="race-schedule">
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 1</span><span class="sched-time">Vie 4 dic · 11:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 2</span><span class="sched-time">Vie 4 dic · 15:00 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot fp"></span><span class="sched-label">Práctica 3</span><span class="sched-time">Sáb 5 dic · 12:30 hs</span></div>
+                        <div class="sched-row"><span class="sched-dot qual"></span><span class="sched-label">Clasificación</span><span class="sched-time">Sáb 5 dic · 16:00 hs</span></div>
+                        <div class="sched-row race-row"><span class="sched-dot race-dot"></span><span class="sched-label">Carrera</span><span class="sched-time">Dom 6 dic · 10:00 hs</span></div>
+                    </div>
                 </li>
+
             </ol>
         </section>
 
