@@ -952,3 +952,325 @@ p { margin: 0 0 1rem; color: var(--muted); }
     align-items: center;
     flex-wrap: wrap;
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   AMBIENTACIÓN F1 / ARGENTINA
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Hero header principal */
+.hero-header {
+    position: relative;
+    overflow: hidden;
+    padding: 2.5rem 2rem;
+}
+
+.hero-flag-stripe {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg,
+        #74ACDF 0%, #74ACDF 33%,
+        #ffffff 33%, #ffffff 66%,
+        #74ACDF 66%, #74ACDF 100%);
+}
+
+.hero-checkered {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 180px;
+    height: 100%;
+    opacity: 0.04;
+    background-image:
+        repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%);
+    background-size: 20px 20px;
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 1.25rem;
+}
+
+.hero-eyebrow {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.hero-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--muted);
+}
+
+.hero-tag.accent {
+    background: rgba(255, 33, 33, 0.12);
+    border-color: rgba(255, 33, 33, 0.3);
+    color: var(--accent-strong);
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin: 0;
+    color: #fff;
+}
+
+.hero-title-arg {
+    color: var(--accent-color);
+}
+
+.hero-subtitle {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 500px;
+    margin: 0;
+}
+
+/* Hero links mejorados */
+.hero-link.primary {
+    background: rgba(255,33,33,0.12);
+    border-color: rgba(255,33,33,0.3);
+    color: #fff;
+}
+
+.hero-link.primary:hover {
+    background: rgba(255,33,33,0.25);
+    border-color: rgba(255,33,33,0.5);
+}
+
+.hero-link.secondary {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.1);
+    color: var(--muted);
+}
+
+.hero-link.secondary:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+/* ─── QUICK LINKS GRID ───────────────────────────────────────────── */
+.quick-links-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.quick-link-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: border-color 0.2s, background 0.2s;
+    padding: 1.25rem;
+}
+
+.quick-link-card:hover {
+    border-color: rgba(255,33,33,0.35);
+    background: linear-gradient(180deg, rgba(255,33,33,0.05), rgba(15,15,15,0.98));
+}
+
+.ql-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.quick-link-card strong {
+    display: block;
+    font-size: 1rem;
+    color: #fff;
+    margin-bottom: 0.2rem;
+}
+
+.quick-link-card p {
+    font-size: 0.82rem;
+    margin: 0;
+    color: var(--muted);
+}
+
+/* ─── COLAPINTO HIGHLIGHT ────────────────────────────────────────── */
+.colapinto-card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: linear-gradient(135deg,
+        rgba(116,172,223,0.08) 0%,
+        rgba(255,255,255,0.04) 50%,
+        rgba(116,172,223,0.08) 100%);
+    border-color: rgba(116,172,223,0.2);
+}
+
+.colapinto-flag {
+    font-size: 3.5rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.colapinto-content { display: grid; gap: 0.5rem; }
+.colapinto-content h2 { margin: 0; font-size: 1.5rem; }
+
+/* ─── LÍDERES ────────────────────────────────────────────────────── */
+.leaders-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.leader-card { display: grid; gap: 0.5rem; }
+.leader-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); }
+.leader-name { font-size: 1.5rem; font-weight: 800; line-height: 1.1; color: var(--accent-strong); }
+.leader-detail { color: var(--muted); font-size: 0.92rem; }
+
+/* ─── COUNTDOWN ──────────────────────────────────────────────────── */
+.countdown-card {
+    background: linear-gradient(135deg, rgba(255,33,33,0.08), rgba(15,15,15,0.98));
+    border-color: rgba(255,33,33,0.25);
+    text-align: center;
+    padding: 1.5rem 2rem;
+}
+.countdown-inner { display: grid; gap: 0.75rem; }
+.countdown-label { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+.countdown-time { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.cd-unit { display: flex; flex-direction: column; align-items: center; min-width: 3.5rem; }
+.cd-unit strong { font-size: 2.2rem; font-weight: 800; color: #fff; line-height: 1; }
+.cd-unit small { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+.cd-sep { font-size: 2rem; font-weight: 700; color: var(--accent-color); margin-bottom: 0.8rem; }
+.countdown-hour { font-size: 0.82rem; color: var(--muted); }
+.countdown-live { font-size: 1.4rem; font-weight: 800; color: var(--accent-color); animation: pulse 1s ease-in-out infinite alternate; }
+@keyframes pulse { from { opacity: 0.6; } to { opacity: 1; } }
+
+/* ─── PÁGINA DE BÚSQUEDA ─────────────────────────────────────────── */
+.search-main-card { padding: 1.75rem; }
+
+.search-input-wrapper {
+    position: relative;
+    margin-bottom: 1.25rem;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    pointer-events: none;
+}
+
+.search-input-big {
+    width: 100%;
+    padding: 1rem 1rem 1rem 2.8rem;
+    border: 2px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.04);
+    color: #fff;
+    font-size: 1.05rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input-big:focus {
+    outline: none;
+    border-color: var(--accent-strong);
+    box-shadow: 0 0 0 4px rgba(225,6,0,0.16);
+}
+
+.search-input-big::placeholder { color: rgba(255,255,255,0.35); }
+
+.quick-access-card { padding: 1.5rem; }
+.quick-access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem; }
+.qa-item {
+    padding: 0.85rem 1rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    color: var(--accent-strong);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+.qa-item:hover { background: rgba(255,255,255,0.08); }
+
+/* ─── CANALES FOX SPORTS ─────────────────────────────────────────── */
+.fox-channels {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+}
+
+.fox-channels-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+}
+
+.fox-channels-grid {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.fox-op {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.83rem;
+}
+
+.fox-op:last-child { border-bottom: none; }
+
+.fox-op-name {
+    font-weight: 700;
+    color: #fff;
+    min-width: 130px;
+    flex-shrink: 0;
+}
+
+.fox-op-ch { color: var(--muted); }
+
+/* ─── FOOTER LEGAL ───────────────────────────────────────────────── */
+.site-footer {
+    margin-top: 3rem;
+    padding: 1.5rem 5%;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    text-align: center;
+}
+
+.site-footer p {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.3);
+    line-height: 1.6;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+/* ─── RESPONSIVE ADICIONAL ───────────────────────────────────────── */
+@media (max-width: 760px) {
+    .quick-links-grid { grid-template-columns: 1fr; }
+    .leaders-grid { grid-template-columns: 1fr; }
+    .quick-access-grid { grid-template-columns: 1fr; }
+    .colapinto-card { flex-direction: column; text-align: center; }
+    .fox-op { flex-direction: column; gap: 0.2rem; }
+    .fox-op-name { min-width: unset; }
+}

@@ -3,35 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fórmula 1 2026</title>
+    <title>F1 Info ARG — Puntajes, Calendario e Info</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="page-home">
     <div class="container">
-        <header class="page-header card">
-            <div>
-                <span class="season-label">Temporada F1 2026</span>
-                <h1>Resumen de la temporada</h1>
-                <p>Explora los puntajes de pilotos y equipos, con acceso rápido a cada mini página.</p>
-            </div>
-            <div class="header-actions">
-                <form class="search-form" id="top-search-form">
-                    <label class="visually-hidden" for="search-input">Buscar piloto o equipo</label>
-                    <input id="search-input" class="search-input search-input-small" type="search" placeholder="Buscar piloto o equipo..." autocomplete="off">
-                </form>
+
+        <!-- HERO HEADER -->
+        <header class="hero-header card">
+            <div class="hero-flag-stripe"></div>
+            <div class="hero-content">
+                <div class="hero-eyebrow">
+                    <span class="hero-tag">🇦🇷 Para los fanáticos argentinos</span>
+                    <span class="hero-tag accent">Temporada 2026</span>
+                </div>
+                <h1 class="hero-title">F1 Info <span class="hero-title-arg">ARG</span></h1>
+                <p class="hero-subtitle">Puntajes, calendario con horarios argentinos e información de la Fórmula 1. Todo en un solo lugar.</p>
                 <nav class="hero-links">
-                    <a class="hero-link" href="drivers.html">Pilotos</a>
-                    <a class="hero-link" href="teams.html">Escuderías</a>
-                    <a class="hero-link" href="calendar.html">Calendario</a>
+                    <a class="hero-link primary" href="drivers.html">🏎 Pilotos</a>
+                    <a class="hero-link primary" href="teams.html">🏁 Escuderías</a>
+                    <a class="hero-link primary" href="calendar.html">📅 Calendario</a>
+                    <a class="hero-link secondary" href="search.html">🔍 Buscar</a>
                 </nav>
             </div>
+            <div class="hero-checkered"></div>
         </header>
 
-        <!-- Stats generales -->
+        <!-- STATS -->
         <section class="card hero-overview">
             <div class="hero-stats">
                 <div class="hero-stat">
-                    <span class="stat-number">5</span>
+                    <span class="stat-number">7</span>
                     <span>Carreras disputadas</span>
                 </div>
                 <div class="hero-stat">
@@ -49,23 +51,67 @@
             </div>
         </section>
 
-        <!-- Countdown a la próxima carrera -->
+        <!-- COUNTDOWN -->
         <section class="card countdown-card">
             <div id="countdown" class="countdown-inner">Cargando...</div>
         </section>
 
-        <!-- Líderes del campeonato -->
+        <!-- LÍDERES -->
         <section class="leaders-grid">
             <div class="card leader-card" id="driver-leader">Cargando...</div>
             <div class="card leader-card" id="team-leader">Cargando...</div>
         </section>
 
-        <!-- Búsqueda -->
-        <section class="card search-card">
-            <h2>Búsqueda rápida</h2>
-            <ul id="search-results" class="results" aria-live="polite"></ul>
+        <!-- ACCESOS RÁPIDOS -->
+        <section class="quick-links-grid">
+            <a class="quick-link-card card" href="drivers.html">
+                <span class="ql-icon">🏎</span>
+                <div>
+                    <strong>Pilotos</strong>
+                    <p>Tabla de puntos y mini páginas de cada piloto</p>
+                </div>
+            </a>
+            <a class="quick-link-card card" href="teams.html">
+                <span class="ql-icon">🏁</span>
+                <div>
+                    <strong>Escuderías</strong>
+                    <p>Campeonato de constructores y fichas de equipos</p>
+                </div>
+            </a>
+            <a class="quick-link-card card" href="calendar.html">
+                <span class="ql-icon">📅</span>
+                <div>
+                    <strong>Calendario</strong>
+                    <p>Horarios ARG, transmisiones y horarios en pista</p>
+                </div>
+            </a>
+            <a class="quick-link-card card" href="search.html">
+                <span class="ql-icon">🔍</span>
+                <div>
+                    <strong>Buscar</strong>
+                    <p>Encontrá rápido cualquier piloto o equipo</p>
+                </div>
+            </a>
         </section>
+
+        <!-- COLAPINTO DESTACADO -->
+        <section class="card colapinto-card">
+            <div class="colapinto-flag">🇦🇷</div>
+            <div class="colapinto-content">
+                <span class="season-label">El argentino en la grilla</span>
+                <h2>Franco Colapinto</h2>
+                <p>El piloto de San Andrés de Giles compite con Alpine en su primera temporada completa en Fórmula 1. Seguí su rendimiento carrera a carrera.</p>
+                <a class="detail-link" href="driver.html?slug=franco-colapinto">Ver mini página →</a>
+            </div>
+        </section>
+
     </div>
+
+    <!-- FOOTER LEGAL -->
+    <footer class="site-footer">
+        <p>Este sitio es un proyecto independiente de fanáticos y no tiene ninguna afiliación, asociación, autorización, respaldo ni conexión oficial con Formula One World Championship Limited, Formula 1, la FIA ni ninguna de sus subsidiarias o afiliadas. Los nombres «Formula 1», «F1» y los logotipos relacionados son marcas registradas de Formula One Licensing B.V.</p>
+    </footer>
+
     <script src="data.js"></script>
     <script src="main.js"></script>
 </body>
