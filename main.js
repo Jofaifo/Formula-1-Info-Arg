@@ -419,75 +419,6 @@ function initSearcher() {
     renderSearchResults([]);
 }
 
-function renderChampionshipLeaders() {
-    const dEl = document.getElementById('driver-leader');
-    const tEl = document.getElementById('team-leader');
-    if (dEl && window.drivers && window.drivers.length) {
-        const d = window.drivers[0];
-        const color = (window.teamColors && window.teamColors[d.teamSlug]) || '#888';
-        const flagHtml = d.flagImg ? `<img src="${d.flagImg}" class="detail-flag-img" alt="">` : (d.flag || '');
-        dEl.innerHTML = `
-            <div class="leader-label">Líder de pilotos</div>
-            <div class="leader-name" style="color:${color}">${flagHtml} ${d.name}</div>
-            <div class="leader-detail">${d.team} · <strong>${d.points} pts</strong></div>
-            <a class="detail-link" href="driver.html?slug=${d.slug}">Ver →</a>`;
-    }
-    if (tEl && window.constructors && window.constructors.length) {
-        const t = window.constructors[0];
-        const color = (window.teamColors && window.teamColors[t.slug]) || '#888';
-        const flagHtml = t.flagImg ? `<img src="${t.flagImg}" class="detail-flag-img" alt="">` : (t.flag || '');
-        tEl.innerHTML = `
-            <div class="leader-label">Líder de constructores</div>
-            <div class="leader-name" style="color:${color}">${flagHtml} ${t.name}</div>
-            <div class="leader-detail"><strong>${t.points} pts</strong></div>
-            <a class="detail-link" href="team.html?slug=${t.slug}">Ver →</a>`;
-    }
-}
-
-function initPage() {
-    const body = document.body;
-
-    if (body.classList.contains('page-home')) {
-        renderChampionshipLeaders();
-        renderCountdown();
-        return;
-    }
-
-    if (body.classList.contains('page-search')) {
-        initSearcher();
-        return;
-    }
-
-    if (body.classList.contains('page-calendar')) {
-        return;
-    }
-
-    if (body.classList.contains('page-drivers')) {
-        renderDriverStandings();
-        renderCards('driver-cards', window.drivers, 'driver');
-        initSearcher();
-        return;
-    }
-
-    if (body.classList.contains('page-teams')) {
-        renderConstructorStandings();
-        renderCards('team-cards', window.constructors, 'constructor');
-        initSearcher();
-        return;
-    }
-
-    if (body.classList.contains('page-driver-detail')) {
-        renderDriverDetail(getSlugFromQuery());
-        initSearcher();
-        return;
-    }
-
-    if (body.classList.contains('page-team-detail')) {
-        renderTeamDetail(getSlugFromQuery());
-        initSearcher();
-        return;
-    }
-}
 
 // ─── COUNTDOWN ────────────────────────────────────────────────────────────────
 function renderCountdown() {
@@ -498,63 +429,92 @@ function renderCountdown() {
     const raceDate = new Date(`${nextRace.date}T${nextRace.time ? nextRace.time + ':00' : '12:00:00'}-03:00`);
     function tick() {
         const diff = raceDate - new Date();
-        if (diff <= 0) { el.innerHTML = `<span class="countdown-live">¡EN VIVO AHORA!</span>`; return; }
+        if (diff <= 0) { el.innerHTML = '<span class="countdown-live">¡EN VIVO AHORA!</span>'; return; }
         const d = Math.floor(diff / 86400000);
         const h = Math.floor((diff % 86400000) / 3600000);
         const m = Math.floor((diff % 3600000) / 60000);
         const s = Math.floor((diff % 60000) / 1000);
-        el.innerHTML = `
-            <div class="countdown-label">Próxima: ${nextRace.flag || ''} ${nextRace.name}</div>
-            <div class="countdown-time">
-                <span class="cd-unit"><strong>${d}</strong><small>días</small></span>
-                <span class="cd-sep">:</span>
-                <span class="cd-unit"><strong>${String(h).padStart(2,'0')}</strong><small>hs</small></span>
-                <span class="cd-sep">:</span>
-                <span class="cd-unit"><strong>${String(m).padStart(2,'0')}</strong><small>min</small></span>
-                <span class="cd-sep">:</span>
-                <span class="cd-unit"><strong>${String(s).padStart(2,'0')}</strong><small>seg</small></span>
-            </div>
-            ${nextRace.time ? `<div class="countdown-hour">🇦🇷 ${nextRace.time} hs Argentina · Fox Sports / Disney+</div>` : ''}
-        `;
+        el.innerHTML =
+            '<div class="countdown-label">Próxima: ' + (nextRace.flag || '') + ' ' + nextRace.name + '</div>' +
+            '<div class="countdown-time">' +
+            '<span class="cd-unit"><strong>' + d + '</strong><small>días</small></span>' +
+            '<span class="cd-sep">:</span>' +
+            '<span class="cd-unit"><strong>' + String(h).padStart(2,'0') + '</strong><small>hs</small></span>' +
+            '<span class="cd-sep">:</span>' +
+            '<span class="cd-unit"><strong>' + String(m).padStart(2,'0') + '</strong><small>min</small></span>' +
+            '<span class="cd-sep">:</span>' +
+            '<span class="cd-unit"><strong>' + String(s).padStart(2,'0') + '</strong><small>seg</small></span>' +
+            '</div>' +
+            (nextRace.time ? '<div class="countdown-hour">🇦🇷 ' + nextRace.time + ' hs Argentina · Fox Sports / Disney+</div>' : '');
     }
-    tick(); setInterval(tick, 1000);
+    tick();
+    setInterval(tick, 1000);
 }
 
 // ─── LÍDERES EN HOME ─────────────────────────────────────────────────────────
 function renderChampionshipLeaders() {
-    const dEl = document.getElementById('driver-leader');
-    const tEl = document.getElementById('team-leader');
+    var dEl = document.getElementById('driver-leader');
+    var tEl = document.getElementById('team-leader');
     if (dEl && window.drivers && window.drivers.length) {
-        const d = window.drivers[0];
-        dEl.innerHTML = `
-            <div class="leader-label">Líder de pilotos</div>
-            <div class="leader-name">${d.flag || ''} ${d.name}</div>
-            <div class="leader-detail">${d.team} · <strong>${d.points} pts</strong></div>
-            <a class="detail-link" href="driver.html?slug=${d.slug}">Ver →</a>`;
+        var d = window.drivers[0];
+        var dColor = (window.teamColors && window.teamColors[d.teamSlug]) || '#888';
+        var dFlag = d.flagImg ? '<img src="' + d.flagImg + '" class="detail-flag-img" alt="">' : (d.flag || '');
+        dEl.innerHTML =
+            '<div class="leader-label">Líder de pilotos</div>' +
+            '<div class="leader-name" style="color:' + dColor + '">' + dFlag + ' ' + d.name + '</div>' +
+            '<div class="leader-detail">' + d.team + ' · <strong>' + d.points + ' pts</strong></div>' +
+            '<a class="detail-link" href="driver.html?slug=' + d.slug + '">Ver →</a>';
     }
     if (tEl && window.constructors && window.constructors.length) {
-        const t = window.constructors[0];
-        tEl.innerHTML = `
-            <div class="leader-label">Líder de constructores</div>
-            <div class="leader-name">${t.flag || ''} ${t.name}</div>
-            <div class="leader-detail"><strong>${t.points} pts</strong></div>
-            <a class="detail-link" href="team.html?slug=${t.slug}">Ver →</a>`;
+        var t = window.constructors[0];
+        var tColor = (window.teamColors && window.teamColors[t.slug]) || '#888';
+        var tFlag = t.flagImg ? '<img src="' + t.flagImg + '" class="detail-flag-img" alt="">' : (t.flag || '');
+        tEl.innerHTML =
+            '<div class="leader-label">Líder de constructores</div>' +
+            '<div class="leader-name" style="color:' + tColor + '">' + tFlag + ' ' + t.name + '</div>' +
+            '<div class="leader-detail"><strong>' + t.points + ' pts</strong></div>' +
+            '<a class="detail-link" href="team.html?slug=' + t.slug + '">Ver →</a>';
     }
 }
 
-// Extender initPage para home y search
-const _origInitPage = initPage;
+// ─── INIT ─────────────────────────────────────────────────────────────────────
 function initPage() {
-    if (document.body.classList.contains('page-home')) {
+    var body = document.body;
+
+    if (body.classList.contains('page-home')) {
         renderChampionshipLeaders();
         renderCountdown();
         return;
     }
-    if (document.body.classList.contains('page-search')) {
+    if (body.classList.contains('page-search')) {
         initSearcher();
         return;
     }
-    _origInitPage();
+    if (body.classList.contains('page-calendar')) {
+        return;
+    }
+    if (body.classList.contains('page-drivers')) {
+        renderDriverStandings();
+        renderCards('driver-cards', window.drivers, 'driver');
+        initSearcher();
+        return;
+    }
+    if (body.classList.contains('page-teams')) {
+        renderConstructorStandings();
+        renderCards('team-cards', window.constructors, 'constructor');
+        initSearcher();
+        return;
+    }
+    if (body.classList.contains('page-driver-detail')) {
+        renderDriverDetail(getSlugFromQuery());
+        initSearcher();
+        return;
+    }
+    if (body.classList.contains('page-team-detail')) {
+        renderTeamDetail(getSlugFromQuery());
+        initSearcher();
+        return;
+    }
 }
 
 if (document.readyState === 'loading') {
