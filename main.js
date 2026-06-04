@@ -8,11 +8,20 @@ function searcher(query) {
     const q = query.trim().toLowerCase();
 
     const driverMatches = window.drivers
-        .filter(driver => driver.name.toLowerCase().includes(q) || driver.team.toLowerCase().includes(q))
+        .filter(driver =>
+            driver.name.toLowerCase().includes(q) ||
+            driver.team.toLowerCase().includes(q) ||
+            (driver.nationality && driver.nationality.toLowerCase().includes(q)) ||
+            (driver.code && driver.code.toLowerCase().includes(q))
+        )
         .map(driver => ({ ...driver, type: 'driver' }));
 
     const constructorMatches = window.constructors
-        .filter(team => team.name.toLowerCase().includes(q))
+        .filter(team =>
+            team.name.toLowerCase().includes(q) ||
+            (team.origin && team.origin.toLowerCase().includes(q)) ||
+            (team.engine && team.engine.toLowerCase().includes(q))
+        )
         .map(team => ({ ...team, type: 'constructor' }));
 
     return [...driverMatches, ...constructorMatches];
@@ -211,7 +220,7 @@ function renderDriverDetail(slug) {
 
     // Foto del piloto
     const photoHtml = driver.photo
-        ? `<img class="driver-photo" src="${driver.photo}" alt="${driver.name}">`
+        ? `<img class="driver-photo" src="${driver.photo}" alt="${driver.name}" style="border: 3px solid ${color}; box-shadow: 0 0 18px ${color}44;">`
         : '';
 
     // Logo del equipo
@@ -369,7 +378,7 @@ function renderTeamDetail(slug) {
         const dColor = (window.teamColors && window.teamColors[d.teamSlug]) || '#888';
         const pct = team.points > 0 ? Math.round((d.points / team.points) * 100) : 0;
         const dFlag = d.flagImg ? `<img src="${d.flagImg}" class="detail-flag-img" alt="">` : (d.flag || '');
-        const dPhoto = d.photo ? `<img src="${d.photo}" class="driver-card-photo" alt="${d.name}">` : '';
+        const dPhoto = d.photo ? `<img src="${d.photo}" class="driver-card-photo" alt="${d.name}" style="border-color:${dColor}">` : '';
         return `<div class="team-driver-card">
             ${dPhoto}
             <div class="team-driver-info">
@@ -427,6 +436,15 @@ function renderCountdown() {
     const nextRace = (window.calendar || []).find(r => r.status === 'next' || r.status === 'upcoming');
     if (!nextRace) { el.style.display = 'none'; return; }
     const raceDate = new Date(`${nextRace.date}T${nextRace.time ? nextRace.time + ':00' : '12:00:00'}-03:00`);
+
+    // Next sprint: find upcoming sprint weekend after current race
+    const nextSprint = (window.calendar || []).find(r =>
+        (r.status === 'next' || r.status === 'upcoming') && r.sprint && r.round !== nextRace.round
+    );
+    const sprintTag = nextRace.sprint
+        ? '<span class="cd-sprint-badge">🏎 Fin de semana Sprint</span>'
+        : (nextSprint ? '<span class="cd-next-sprint">Próximo Sprint: ' + nextSprint.flag + ' ' + nextSprint.name + ' (R' + nextSprint.round + ')</span>' : '');
+
     function tick() {
         const diff = raceDate - new Date();
         if (diff <= 0) { el.innerHTML = '<span class="countdown-live">¡EN VIVO AHORA!</span>'; return; }
@@ -436,6 +454,7 @@ function renderCountdown() {
         const s = Math.floor((diff % 60000) / 1000);
         el.innerHTML =
             '<div class="countdown-label">Próxima: ' + (nextRace.flag || '') + ' ' + nextRace.name + '</div>' +
+            sprintTag +
             '<div class="countdown-time">' +
             '<span class="cd-unit"><strong>' + d + '</strong><small>días</small></span>' +
             '<span class="cd-sep">:</span>' +
@@ -515,10 +534,234 @@ function initPage() {
         initSearcher();
         return;
     }
+    if (body.classList.contains('page-compare')) {
+        initCompare();
+        return;
+    }
+    if (body.classList.contains('page-circuits')) {
+        renderCircuits();
+        return;
+    }
 }
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initPage);
 } else {
     initPage();
+}
+
+// ─── COMPARADOR DE PILOTOS ────────────────────────────────────────────────────
+function initCompare() {
+    const selA = document.getElementById('driver-a');
+    const selB = document.getElementById('driver-b');
+    if (!selA || !selB) return;
+
+    window.drivers.forEach((d, i) => {
+        const optA = document.createElement('option');
+        optA.value = d.slug;
+        optA.textContent = d.name + ' (' + d.team + ')';
+        selA.appendChild(optA);
+
+        const optB = document.createElement('option');
+        optB.value = d.slug;
+        optB.textContent = d.name + ' (' + d.team + ')';
+        selB.appendChild(optB);
+    });
+
+    // Default to first two drivers
+    if (selA.options.length > 1) selB.selectedIndex = 1;
+
+    // Auto compare on selection change
+    selA.addEventListener('change', runCompare);
+    selB.addEventListener('change', runCompare);
+    document.getElementById('compare-btn').addEventListener('click', runCompare);
+
+    runCompare();
+}
+
+function runCompare() {
+    const slugA = document.getElementById('driver-a').value;
+    const slugB = document.getElementById('driver-b').value;
+    const dA = window.findDriverBySlug(slugA);
+    const dB = window.findDriverBySlug(slugB);
+    const result = document.getElementById('compare-result');
+    if (!dA || !dB || !result) return;
+
+    if (slugA === slugB) {
+        result.className = 'card compare-same-warning';
+        result.innerHTML = '<p>Seleccioná dos pilotos distintos para comparar.</p>';
+        return;
+    }
+
+    const colA = window.getTeamColor(dA.teamSlug);
+    const colB = window.getTeamColor(dB.teamSlug);
+    const racesDone = (window.races || []);
+    const cumA = window.getCumulativePoints(dA);
+    const cumB = window.getCumulativePoints(dB);
+
+    function statBar(valA, valB, label, formatFn) {
+        const fmt = formatFn || (v => v);
+        const maxVal = Math.max(valA, valB, 1);
+        const pctA = (valA / maxVal) * 100;
+        const pctB = (valB / maxVal) * 100;
+        const winnerA = valA > valB ? 'compare-stat-winner' : '';
+        const winnerB = valB > valA ? 'compare-stat-winner' : '';
+        return `<div class="cmp-stat-row">
+            <div class="cmp-stat-a ${winnerA}">
+                <span class="cmp-val" style="color:${colA}">${fmt(valA)}</span>
+                <div class="cmp-bar-track"><div class="cmp-bar-fill" style="width:${pctA}%;background:${colA}"></div></div>
+            </div>
+            <div class="cmp-stat-label">${label}</div>
+            <div class="cmp-stat-b ${winnerB}">
+                <div class="cmp-bar-track cmp-bar-right"><div class="cmp-bar-fill cmp-bar-fill-right" style="width:${pctB}%;background:${colB}"></div></div>
+                <span class="cmp-val" style="color:${colB}">${fmt(valB)}</span>
+            </div>
+        </div>`;
+    }
+
+    // Race-by-race comparison table
+    const raceRows = racesDone.map((race, i) => {
+        const posA = dA.raceResults ? dA.raceResults[i] : null;
+        const posB = dB.raceResults ? dB.raceResults[i] : null;
+        const pts = [25,18,15,12,10,8,6,4,2,1];
+        const ptsA = posA && posA >= 1 && posA <= 10 ? pts[posA-1] : 0;
+        const ptsB = posB && posB >= 1 && posB <= 10 ? pts[posB-1] : 0;
+        const clsA = posA !== null && (posB === null || posA < posB) ? 'cmp-race-winner' : '';
+        const clsB = posB !== null && (posA === null || posB < posA) ? 'cmp-race-winner' : '';
+        return `<tr>
+            <td class="cmp-race-cell ${clsA}" style="${clsA ? 'color:'+colA : ''}">${posA !== null ? posA+'º' : '—'} <span class="cmp-race-pts">${ptsA > 0 ? '+'+ptsA : ''}</span></td>
+            <td class="cmp-race-name">${race.flag} ${race.name}${race.sprint ? ' <em class="sprint-tag">S</em>' : ''}</td>
+            <td class="cmp-race-cell ${clsB}" style="${clsB ? 'color:'+colB : ''}">${posB !== null ? posB+'º' : '—'} <span class="cmp-race-pts">${ptsB > 0 ? '+'+ptsB : ''}</span></td>
+        </tr>`;
+    }).join('');
+
+    // SVG dual-line chart
+    let chartHtml = '';
+    if (cumA.length > 1 && cumB.length > 1) {
+        const W = 500, H = 160;
+        const PAD = { top: 12, right: 16, bottom: 28, left: 40 };
+        const iW = W - PAD.left - PAD.right;
+        const iH = H - PAD.top - PAD.bottom;
+        const n = racesDone.length;
+        const maxPts = Math.max(...cumA, ...cumB, 1);
+        const xS = i => PAD.left + (i / (n - 1)) * iW;
+        const yS = v => PAD.top + iH - (v / maxPts) * iH;
+
+        const polyA = cumA.map((v, i) => `${xS(i)},${yS(v)}`).join(' ');
+        const polyB = cumB.map((v, i) => `${xS(i)},${yS(v)}`).join(' ');
+        const xLabels = racesDone.map((r, i) =>
+            `<text x="${xS(i)}" y="${H - 4}" text-anchor="middle" fill="#555" font-size="9">${r.short}</text>`
+        ).join('');
+        const dotsA = cumA.map((v, i) =>
+            `<circle cx="${xS(i)}" cy="${yS(v)}" r="4" fill="${colA}" stroke="#111" stroke-width="2"><title>${racesDone[i]?.name}: ${v} pts</title></circle>`
+        ).join('');
+        const dotsB = cumB.map((v, i) =>
+            `<circle cx="${xS(i)}" cy="${yS(v)}" r="4" fill="${colB}" stroke="#111" stroke-width="2"><title>${racesDone[i]?.name}: ${v} pts</title></circle>`
+        ).join('');
+
+        chartHtml = `<div class="cmp-chart-wrap">
+            <h4 class="chart-title">Evolución de puntos</h4>
+            <div class="cmp-chart-legend">
+                <span><span class="cmp-legend-dot" style="background:${colA}"></span> ${dA.name}</span>
+                <span><span class="cmp-legend-dot" style="background:${colB}"></span> ${dB.name}</span>
+            </div>
+            <svg viewBox="0 0 ${W} ${H}" class="points-chart cmp-chart-svg">
+                ${xLabels}
+                <polyline points="${polyA}" fill="none" stroke="${colA}" stroke-width="2.5" stroke-linejoin="round"/>
+                <polyline points="${polyB}" fill="none" stroke="${colB}" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="6 3"/>
+                ${dotsA}${dotsB}
+            </svg>
+        </div>`;
+    }
+
+    result.className = 'compare-result-visible';
+    result.innerHTML = `
+        <!-- Headers -->
+        <div class="cmp-headers">
+            <div class="cmp-header-a card" style="border-top:3px solid ${colA}">
+                <img src="${dA.flagImg || ''}" class="detail-flag-img" alt="">
+                <div class="cmp-hname" style="color:${colA}">${dA.name}</div>
+                <div class="cmp-hteam">${dA.team}</div>
+                <div class="cmp-hpts">${dA.points} pts · P${dA.position}</div>
+            </div>
+            <div class="cmp-vs-badge">VS</div>
+            <div class="cmp-header-b card" style="border-top:3px solid ${colB}">
+                <img src="${dB.flagImg || ''}" class="detail-flag-img" alt="">
+                <div class="cmp-hname" style="color:${colB}">${dB.name}</div>
+                <div class="cmp-hteam">${dB.team}</div>
+                <div class="cmp-hpts">${dB.points} pts · P${dB.position}</div>
+            </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="card cmp-stats-card">
+            <h3>Estadísticas</h3>
+            <div class="cmp-stats-grid">
+                ${statBar(dA.points, dB.points, 'Puntos')}
+                ${statBar(dA.wins, dB.wins, 'Victorias')}
+                ${statBar(dA.podiums, dB.podiums, 'Podios')}
+                ${statBar(dA.poles || 0, dB.poles || 0, 'Poles')}
+                ${statBar(dA.fastestLaps || 0, dB.fastestLaps || 0, 'V. Rápidas')}
+                ${statBar(dA.age, dB.age, 'Edad', v => v + ' años')}
+            </div>
+        </div>
+
+        <!-- Gráfico -->
+        ${chartHtml ? '<div class="card">' + chartHtml + '</div>' : ''}
+
+        <!-- Carrera a carrera -->
+        ${raceRows ? `<div class="card cmp-race-card">
+            <h3>Carrera a carrera</h3>
+            <table class="cmp-race-table">
+                <thead>
+                    <tr>
+                        <th style="color:${colA}">${dA.code}</th>
+                        <th>Carrera</th>
+                        <th style="color:${colB}">${dB.code}</th>
+                    </tr>
+                </thead>
+                <tbody>${raceRows}</tbody>
+            </table>
+        </div>` : ''}
+    `;
+}
+
+// ─── CIRCUITOS ───────────────────────────────────────────────────────────────
+function renderCircuits() {
+    const grid = document.getElementById('circuits-grid');
+    if (!grid || !window.circuits) return;
+
+    grid.innerHTML = (window.circuits || []).map(c => {
+        const flagHtml = c.flagImg ? `<img src="${c.flagImg}" class="detail-flag-img" alt="">` : (c.flag || '');
+        return `<div class="card circuit-card">
+            <div class="circuit-header">
+                <div>
+                    <div class="circuit-country">${flagHtml} ${c.country} · ${c.city}</div>
+                    <h3 class="circuit-name">${c.name}</h3>
+                </div>
+                <div class="circuit-year">Desde ${c.firstGP}</div>
+            </div>
+            <div class="circuit-layout-wrap">
+                <svg viewBox="${c.viewBox}" class="circuit-svg" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="glow-${c.slug}">
+                            <feGaussianBlur stdDeviation="3" result="blur"/>
+                            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                        </filter>
+                    </defs>
+                    <path d="${c.layout}" fill="none" stroke="${c.color}" stroke-width="6"
+                          stroke-linejoin="round" stroke-linecap="round" opacity="0.25"/>
+                    <path d="${c.layout}" fill="none" stroke="${c.color}" stroke-width="3"
+                          stroke-linejoin="round" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="circuit-stats">
+                <div class="circuit-stat"><span class="cs-val">${c.length} km</span><span class="cs-label">Longitud</span></div>
+                <div class="circuit-stat"><span class="cs-val">${c.laps}</span><span class="cs-label">Vueltas</span></div>
+                <div class="circuit-stat"><span class="cs-val">${c.lapRecord}</span><span class="cs-label">Récord de vuelta</span></div>
+            </div>
+            <div class="circuit-record-holder">${c.lapRecordHolder} · ${c.lapRecordYear}</div>
+            <p class="circuit-desc">${c.description}</p>
+        </div>`;
+    }).join('');
 }
