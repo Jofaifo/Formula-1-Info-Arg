@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — F1 Info ARG</title>
+    <link rel="icon" type="image/jpeg" href="img/logo-f1arg.jpg">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .login-card {
+            width: 100%;
+            max-width: 380px;
+            padding: 2.5rem 2rem;
+            display: grid;
+            gap: 1.25rem;
+            text-align: center;
+        }
+        .login-logo {
+            width: 64px; height: 64px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.12);
+            margin: 0 auto;
+        }
+        .login-title { font-size: 1.3rem; font-weight: 900; margin: 0; }
+        .login-sub   { font-size: 0.85rem; color: var(--muted); margin: -0.5rem 0 0; }
+        .login-field {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: white;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            text-align: center;
+            letter-spacing: 0.12em;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .login-field:focus { outline: none; border-color: var(--accent-color); }
+        .login-field.error { border-color: #ff4444; animation: shake 0.35s ease; }
+        .login-btn {
+            width: 100%;
+            padding: 0.85rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .login-btn:hover { background: #ff3333; transform: translateY(-1px); }
+        .login-btn:active { transform: translateY(0); }
+        .login-error {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            background: rgba(255,80,80,0.08);
+            border: 1px solid rgba(255,80,80,0.2);
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            display: none;
+        }
+        .login-error.visible { display: block; }
+        .attempts-warn {
+            font-size: 0.78rem;
+            color: #ffaa00;
+            display: none;
+        }
+        .attempts-warn.visible { display: block; }
+        .back-link { font-size: 0.8rem; color: var(--muted); text-decoration: none; }
+        .back-link:hover { color: white; }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20%      { transform: translateX(-8px); }
+            40%      { transform: translateX(8px); }
+            60%      { transform: translateX(-5px); }
+            80%      { transform: translateX(5px); }
+        }
+        /* Lockout overlay */
+        #lockout-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85);
+            align-items: center; justify-content: center;
+            flex-direction: column; gap: 1rem;
+            z-index: 999;
+            text-align: center;
+        }
+        #lockout-overlay.visible { display: flex; }
+        #lockout-timer { font-size: 2.5rem; font-weight: 900; color: #ff4444; }
+        #lockout-overlay p { color: var(--muted); font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card login-card">
+        <img src="img/logo-f1arg.jpg" alt="F1 Info ARG" class="login-logo">
+        <div>
+            <h1 class="login-title">Panel Admin</h1>
+            <p class="login-sub">F1 Info ARG · Temporada 2026</p>
+        </div>
+
+        <input
+            type="password"
+            id="pw-input"
+            class="login-field"
+            placeholder="Contraseña"
+            maxlength="64"
+            autocomplete="current-password"
+        >
+
+        <div class="login-error" id="login-error">Contraseña incorrecta. Intentá de nuevo.</div>
+        <div class="attempts-warn" id="attempts-warn"></div>
+
+        <button class="login-btn" id="login-btn">Ingresar →</button>
+
+        <a href="index.html" class="back-link">← Volver al sitio</a>
+    </div>
+</div>
+
+<!-- Lockout overlay -->
+<div id="lockout-overlay">
+    <div style="font-size:2rem">🔒</div>
+    <div id="lockout-timer">5:00</div>
+    <p>Demasiados intentos fallidos.<br>Esperá antes de intentar de nuevo.</p>
+</div>
+
+<script>
+// ─── CONFIGURACIÓN ────────────────────────────────────────────────────────────
+// SHA-256 de la contraseña. Para cambiarla:
+// 1. Calculá el SHA-256 de tu nueva contraseña (ej: en https://emn178.github.io/online-tools/sha256.html)
+// 2. Reemplazá el valor de PASSWORD_HASH abajo.
+const PASSWORD_HASH = '6051fc84a7a0d74c225fb18a496b09952da5642e60723ecae543298edd7d82d6';
+// Contraseña actual: admin2026
+
+const SESSION_KEY    = 'f1arg_admin_auth';
+const SESSION_EXPIRY = 4 * 60 * 60 * 1000; // 4 horas en ms
+const MAX_ATTEMPTS   = 5;
+const LOCKOUT_MS     = 5 * 60 * 1000; // 5 minutos
+
+// ─── SESIÓN ACTIVA? ───────────────────────────────────────────────────────────
+function isLoggedIn() {
+    try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        if (!raw) return false;
+        const { expiry } = JSON.parse(raw);
+        if (Date.now() > expiry) {
+            localStorage.removeItem(SESSION_KEY);
+            return false;
+        }
+        return true;
+    } catch { return false; }
+}
+
+// Si ya está logueado, redirigir directo al admin
+if (isLoggedIn()) {
+    window.location.replace('admin.html');
+}
+
+// ─── CONTROL DE INTENTOS ─────────────────────────────────────────────────────
+function getAttemptData() {
+    try {
+        const raw = localStorage.getItem('f1arg_attempts');
+        return raw ? JSON.parse(raw) : { count: 0, lockUntil: 0 };
+    } catch { return { count: 0, lockUntil: 0 }; }
+}
+function setAttemptData(data) {
+    localStorage.setItem('f1arg_attempts', JSON.stringify(data));
+}
+function resetAttempts() {
+    localStorage.removeItem('f1arg_attempts');
+}
+
+// ─── LOCKOUT TIMER ───────────────────────────────────────────────────────────
+let lockoutInterval = null;
+function startLockout(until) {
+    const overlay = document.getElementById('lockout-overlay');
+    const timerEl = document.getElementById('lockout-timer');
+    overlay.classList.add('visible');
+    document.getElementById('login-btn').disabled = true;
+    document.getElementById('pw-input').disabled = true;
+
+    function tick() {
+        const remaining = until - Date.now();
+        if (remaining <= 0) {
+            clearInterval(lockoutInterval);
+            overlay.classList.remove('visible');
+            document.getElementById('login-btn').disabled = false;
+            document.getElementById('pw-input').disabled = false;
+            document.getElementById('attempts-warn').classList.remove('visible');
+            resetAttempts();
+            return;
+        }
+        const m = Math.floor(remaining / 60000);
+        const s = Math.floor((remaining % 60000) / 1000);
+        timerEl.textContent = `${m}:${String(s).padStart(2,'0')}`;
+    }
+    tick();
+    lockoutInterval = setInterval(tick, 500);
+}
+
+// Chequear si hay lockout activo al cargar
+(function checkLockoutOnLoad() {
+    const { lockUntil } = getAttemptData();
+    if (lockUntil && Date.now() < lockUntil) {
+        startLockout(lockUntil);
+    }
+})();
+
+// ─── SHA-256 (Web Crypto API nativa) ─────────────────────────────────────────
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// ─── LOGIN ────────────────────────────────────────────────────────────────────
+async function attemptLogin() {
+    const input    = document.getElementById('pw-input');
+    const errorEl  = document.getElementById('login-error');
+    const warnEl   = document.getElementById('attempts-warn');
+    const btn      = document.getElementById('login-btn');
+
+    const data = getAttemptData();
+
+    // Lockout activo
+    if (data.lockUntil && Date.now() < data.lockUntil) {
+        startLockout(data.lockUntil);
+        return;
+    }
+
+    const pw = input.value.trim();
+    if (!pw) {
+        input.classList.add('error');
+        setTimeout(() => input.classList.remove('error'), 400);
+        return;
+    }
+
+    btn.textContent = 'Verificando...';
+    btn.disabled = true;
+
+    const hash = await sha256(pw);
+
+    if (hash === PASSWORD_HASH) {
+        // Éxito — guardar sesión
+        resetAttempts();
+        localStorage.setItem(SESSION_KEY, JSON.stringify({
+            expiry: Date.now() + SESSION_EXPIRY
+        }));
+        btn.textContent = '✅ Acceso concedido';
+        setTimeout(() => window.location.replace('admin.html'), 400);
+    } else {
+        // Fallo
+        data.count = (data.count || 0) + 1;
+        input.value = '';
+        input.classList.add('error');
+        setTimeout(() => input.classList.remove('error'), 400);
+        errorEl.classList.add('visible');
+        btn.textContent = 'Ingresar →';
+        btn.disabled = false;
+
+        if (data.count >= MAX_ATTEMPTS) {
+            data.lockUntil = Date.now() + LOCKOUT_MS;
+            setAttemptData(data);
+            startLockout(data.lockUntil);
+        } else {
+            const remaining = MAX_ATTEMPTS - data.count;
+            setAttemptData(data);
+            if (remaining <= 2) {
+                warnEl.textContent = `⚠️ ${remaining} intento${remaining > 1 ? 's' : ''} antes del bloqueo.`;
+                warnEl.classList.add('visible');
+            }
+        }
+    }
+}
+
+document.getElementById('login-btn').addEventListener('click', attemptLogin);
+document.getElementById('pw-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') attemptLogin();
+    document.getElementById('login-error').classList.remove('visible');
+});
+</script>
+</body>
+</html>

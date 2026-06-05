@@ -188,6 +188,7 @@
         </div>
         <nav class="hero-links">
             <a class="hero-link" href="index.html">← Volver al sitio</a>
+            <button class="hero-link" id="logout-btn" style="background:none;border:1px solid rgba(255,80,80,0.3);color:#ff6b6b;cursor:pointer;border-radius:999px;padding:0.35rem 1rem;font-size:0.82rem;font-weight:700">🔒 Cerrar sesión</button>
         </nav>
     </header>
 
@@ -715,6 +716,22 @@ document.addEventListener('DOMContentLoaded', () => {
     initChampionship();
     initCalendarEdit();
     initExport();
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('f1arg_admin_auth');
+        window.location.replace('admin-login.html');
+    });
+
+    // Show session expiry time
+    try {
+        const raw = localStorage.getItem('f1arg_admin_auth');
+        if (raw) {
+            const { expiry } = JSON.parse(raw);
+            const mins = Math.round((expiry - Date.now()) / 60000);
+            document.querySelector('.page-header p').textContent += ` · Sesión activa por ${mins} min más.`;
+        }
+    } catch {}
 });
 </script>
 </body>
