@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Admin — F1 Info ARG</title>
+    <link rel="icon" type="image/jpeg" href="img/logo-f1arg.jpg">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Admin-specific styles ── */
+        .admin-grid { display: grid; gap: 1.5rem; }
+        .admin-section { padding: 1.5rem; }
+        .admin-section h2 { margin: 0 0 1.2rem; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .admin-section h2 .section-icon { font-size: 1.3rem; }
+
+        /* Form elements */
+        .form-group { display: grid; gap: 0.4rem; margin-bottom: 1rem; }
+        .form-group label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-color); }
+        .form-group input, .form-group select, .form-group textarea {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: var(--text-color);
+            padding: 0.65rem 0.9rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        .form-group select option { background: #1a1a2e; }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.8rem; }
+
+        /* Race results table */
+        .race-results-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 0.5rem; }
+        .race-results-table th {
+            padding: 0.5rem 0.6rem;
+            text-align: left;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .race-results-table td { padding: 0.4rem 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+        .race-results-table tr:hover td { background: rgba(255,255,255,0.03); }
+        .pos-input {
+            width: 60px !important;
+            padding: 0.35rem 0.5rem !important;
+            text-align: center;
+            font-weight: 700;
+        }
+        .pos-badge { display: inline-block; font-weight: 800; font-size: 0.85rem; min-width: 24px; text-align: center; }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.65rem 1.4rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-primary:hover { background: #ff3333; transform: translateY(-1px); }
+        .btn-secondary {
+            background: rgba(255,255,255,0.07);
+            color: var(--text-color);
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 0.65rem 1.2rem;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+        .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem; }
+        .btn-danger {
+            background: rgba(220,50,50,0.15);
+            color: #ff6b6b;
+            border: 1px solid rgba(220,50,50,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed; bottom: 2rem; right: 2rem;
+            background: #1e3a1e; border: 1px solid #4caf50; color: #a5d6a7;
+            padding: 0.75rem 1.25rem; border-radius: 12px;
+            font-size: 0.9rem; font-weight: 600;
+            opacity: 0; transform: translateY(12px);
+            transition: all 0.3s; pointer-events: none; z-index: 9999;
+        }
+        #toast.show { opacity: 1; transform: translateY(0); }
+        #toast.error { background: #3a1e1e; border-color: #f44336; color: #ef9a9a; }
+
+        /* Standings preview */
+        .standings-preview { font-size: 0.82rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.8; }
+        .preview-row { display: flex; gap: 0.5rem; align-items: center; }
+        .preview-pos { font-weight: 800; color: white; min-width: 20px; }
+        .preview-name { flex: 1; }
+        .preview-pts { font-weight: 700; color: #6eff99; }
+
+        /* Driver color dot */
+        .driver-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+        /* Code output */
+        .code-output {
+            background: #0d0d0d;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.78rem;
+            color: #6eff99;
+            max-height: 320px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin-top: 0.75rem;
+        }
+        .copy-btn {
+            background: rgba(110,255,153,0.1);
+            border: 1px solid rgba(110,255,153,0.3);
+            color: #6eff99;
+            padding: 0.4rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .copy-btn:hover { background: rgba(110,255,153,0.18); }
+
+        /* Tabs */
+        .admin-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .admin-tab {
+            padding: 0.5rem 1.1rem;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            color: var(--muted);
+            transition: all 0.2s;
+        }
+        .admin-tab.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+        .admin-panel { display: none; }
+        .admin-panel.active { display: grid; gap: 1.5rem; }
+
+        /* Warning note */
+        .admin-note {
+            background: rgba(255,165,0,0.08);
+            border: 1px solid rgba(255,165,0,0.25);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 0.82rem;
+            color: #ffcc80;
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-start;
+        }
+    </style>
+</head>
+<body class="page-admin">
+<div class="container">
+
+    <header class="page-header card">
+        <div>
+            <span class="season-label">Admin · Temporada 2026</span>
+            <h1>Panel de Administración</h1>
+            <p>Actualizá resultados, puntajes y datos del campeonato.</p>
+        </div>
+        <nav class="hero-links">
+            <a class="hero-link" href="index.html">← Volver al sitio</a>
+        </nav>
+    </header>
+
+    <div class="admin-note card">
+        <span>⚠️</span>
+        <span>Este panel genera el código actualizado de <code>data.js</code>. Copiá el bloque generado y reemplazá el archivo en tu proyecto para que los cambios se reflejen en el sitio.</span>
+    </div>
+
+    <!-- Tabs -->
+    <div class="admin-tabs">
+        <div class="admin-tab active" data-tab="race-result">🏁 Resultado de carrera</div>
+        <div class="admin-tab" data-tab="championship">📊 Campeonato</div>
+        <div class="admin-tab" data-tab="calendar-edit">📅 Calendario</div>
+        <div class="admin-tab" data-tab="export">💾 Exportar data.js</div>
+    </div>
+
+    <!-- TAB: Resultado de carrera -->
+    <div class="admin-panel active" id="panel-race-result">
+        <div class="card admin-section">
+            <h2><span class="section-icon">🏁</span> Registrar resultado de carrera</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Ronda</label>
+                    <select id="race-round"></select>
+                </div>
+                <div class="form-group">
+                    <label>Ganador</label>
+                    <select id="race-winner"></select>
+                </div>
+                <div class="form-group">
+                    <label>Pole Position</label>
+                    <select id="race-pole"></select>
+                </div>
+                <div class="form-group">
+                    <label>Vuelta Rápida</label>
+                    <select id="race-fl"></select>
+                </div>
+            </div>
+            <h3 style="font-size:0.9rem;margin:1rem 0 0.5rem;color:var(--muted)">Posiciones finales (1–22)</h3>
+            <div style="overflow-x:auto">
+                <table class="race-results-table" id="positions-table">
+                    <thead>
+                        <tr>
+                            <th>Piloto</th>
+                            <th>Equipo</th>
+                            <th>Pos.</th>
+                            <th>Pts</th>
+                        </tr>
+                    </thead>
+                    <tbody id="positions-tbody"></tbody>
+                </table>
+            </div>
+            <div class="btn-row" style="margin-top:1.25rem">
+                <button class="btn-primary" id="save-race-btn">Guardar resultado →</button>
+                <button class="btn-secondary" id="auto-sort-btn">Auto-ordenar por pos.</button>
+            </div>
+        </div>
+
+        <div class="card admin-section" id="race-preview-card" style="display:none">
+            <h2><span class="section-icon">✅</span> Carrera guardada — vista previa</h2>
+            <div id="race-preview-content"></div>
+        </div>
+    </div>
+
+    <!-- TAB: Campeonato -->
+    <div class="admin-panel" id="panel-championship">
+        <div class="card admin-section">
+            <h2><span class="section-icon">📊</span> Ajustar puntajes del campeonato</h2>
+            <p style="font-size:0.85rem;color:var(--muted);margin:0 0 1rem">Los puntajes se recalculan automáticamente al guardar resultados. Usá esto solo para correcciones manuales.</p>
+            <div style="overflow-x:auto">
+                <table class="race-results-table" id="standings-edit-table">
+                    <thead><tr><th>Piloto</th><th>Equipo</th><th>Puntos</th><th>Victorias</th><th>Podios</th><th>Poles</th></tr></thead>
+                    <tbody id="standings-edit-tbody"></tbody>
+                </table>
+            </div>
+            <div class="btn-row" style="margin-top:1rem">
+                <button class="btn-primary" id="save-standings-btn">Guardar cambios →</button>
+            </div>
+        </div>
+        <div class="card admin-section">
+            <h2><span class="section-icon">🏆</span> Vista previa — Top 10</h2>
+            <div id="standings-preview" class="standings-preview"></div>
+        </div>
+    </div>
+
+    <!-- TAB: Calendario -->
+    <div class="admin-panel" id="panel-calendar-edit">
+        <div class="card admin-section">
+            <h2><span class="section-icon">📅</span> Editar estado del calendario</h2>
+            <p style="font-size:0.85rem;color:var(--muted);margin:0 0 1rem">Cambiá el estado de cada GP: done, next, o upcoming.</p>
+            <div style="overflow-x:auto">
+                <table class="race-results-table" id="calendar-edit-table">
+                    <thead><tr><th>R</th><th>GP</th><th>Fecha</th><th>Estado</th><th>Ganador</th></tr></thead>
+                    <tbody id="calendar-edit-tbody"></tbody>
+                </table>
+            </div>
+            <div class="btn-row" style="margin-top:1rem">
+                <button class="btn-primary" id="save-calendar-btn">Guardar calendario →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: Exportar -->
+    <div class="admin-panel" id="panel-export">
+        <div class="card admin-section">
+            <h2><span class="section-icon">💾</span> Exportar bloques de data.js</h2>
+            <p style="font-size:0.85rem;color:var(--muted);margin:0 0 1rem">Generá el código actualizado para pegar en <code>data.js</code>.</p>
+            <div class="btn-row">
+                <button class="btn-primary" id="export-races-btn">Exportar window.races</button>
+                <button class="btn-primary" id="export-drivers-btn">Exportar window.drivers (pts)</button>
+                <button class="btn-primary" id="export-calendar-btn">Exportar window.calendar</button>
+                <button class="btn-secondary" id="export-all-btn">Exportar todo</button>
+            </div>
+            <div id="export-output" style="display:none">
+                <div class="code-output" id="code-output"></div>
+                <button class="copy-btn" id="copy-btn">📋 Copiar código</button>
+            </div>
+        </div>
+        <div class="card admin-section">
+            <h2><span class="section-icon">📋</span> Instrucciones</h2>
+            <ol style="font-size:0.88rem;color:var(--muted);line-height:2;padding-left:1.25rem;margin:0">
+                <li>Después de cada GP, ir a <strong>Resultado de carrera</strong> e ingresar posiciones.</li>
+                <li>Hacer clic en <strong>Guardar resultado</strong>.</li>
+                <li>Ir a <strong>Exportar data.js</strong> y exportar el bloque que cambió.</li>
+                <li>Copiar el código y reemplazar el bloque correspondiente en <code>data.js</code>.</li>
+                <li>¡Listo! El sitio muestra los datos actualizados.</li>
+            </ol>
+        </div>
+    </div>
+
+</div>
+
+<div id="toast"></div>
+
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-logo-wrap">
+            <img src="img/logo-f1arg.jpg" alt="F1 Info ARG" class="footer-logo">
+            <span class="footer-brand">F1 Info ARG — Admin</span>
+        </div>
+    </div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+// ─── ADMIN PANEL LOGIC ────────────────────────────────────────────────────────
+
+// State: deep copy of data for editing
+let adminDrivers = JSON.parse(JSON.stringify(window.drivers));
+let adminRaces   = JSON.parse(JSON.stringify(window.races));
+let adminCalendar = JSON.parse(JSON.stringify(window.calendar));
+
+const PTS_MAP = [25,18,15,12,10,8,6,4,2,1];
+
+function pts(pos) { return (pos >= 1 && pos <= 10) ? PTS_MAP[pos-1] : 0; }
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    });
+});
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = isError ? 'show error' : 'show';
+    setTimeout(() => t.className = '', 2800);
+}
+
+// ── TAB: RACE RESULT ─────────────────────────────────────────────────────────
+function initRaceResult() {
+    const roundSel = document.getElementById('race-round');
+    const winnerSel = document.getElementById('race-winner');
+    const poleSel   = document.getElementById('race-pole');
+    const flSel     = document.getElementById('race-fl');
+
+    // Populate race round selector (upcoming + next)
+    adminCalendar.forEach(r => {
+        if (r.status === 'upcoming' || r.status === 'next' || r.status === 'done') {
+            const o = document.createElement('option');
+            o.value = r.round;
+            o.textContent = `R${r.round} — ${r.name} ${r.status === 'done' ? '✓' : r.status === 'next' ? '← PRÓXIMA' : ''}`;
+            o.dataset.status = r.status;
+            roundSel.appendChild(o);
+        }
+    });
+
+    // Populate driver selectors
+    [winnerSel, poleSel, flSel].forEach(sel => {
+        sel.innerHTML = '<option value="">— Seleccionar —</option>';
+        adminDrivers.forEach(d => {
+            const o = document.createElement('option');
+            o.value = d.slug;
+            o.textContent = d.name + ' (' + d.code + ')';
+            sel.appendChild(o);
+        });
+    });
+
+    // Build positions table
+    buildPositionsTable();
+
+    // On round change, pre-fill with existing results
+    roundSel.addEventListener('change', () => {
+        const round = parseInt(roundSel.value);
+        const raceIndex = adminRaces.findIndex(r => r.round === round);
+        if (raceIndex >= 0) {
+            const race = adminRaces[raceIndex];
+            winnerSel.value = adminDrivers.find(d => d.name === race.winner)?.slug || '';
+            poleSel.value   = adminDrivers.find(d => d.name === race.polePosition)?.slug || '';
+            flSel.value     = adminDrivers.find(d => d.name === race.fastestLap)?.slug || '';
+        }
+        // Pre-fill positions from raceResults
+        const roundIdx = parseInt(roundSel.value) - 1;
+        adminDrivers.forEach(d => {
+            const input = document.getElementById('pos-' + d.slug);
+            if (input) {
+                const raceResultIdx = adminRaces.findIndex(r => r.round === round);
+                input.value = d.raceResults[raceResultIdx >= 0 ? raceResultIdx : roundIdx] ?? '';
+            }
+        });
+    });
+
+    document.getElementById('auto-sort-btn').addEventListener('click', autoSort);
+    document.getElementById('save-race-btn').addEventListener('click', saveRaceResult);
+}
+
+function buildPositionsTable() {
+    const tbody = document.getElementById('positions-tbody');
+    tbody.innerHTML = '';
+    adminDrivers.forEach(d => {
+        const color = window.teamColors[d.teamSlug] || '#888';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>
+                <span class="driver-dot" style="background:${color}"></span>
+                <strong style="margin-left:6px">${d.name}</strong>
+            </td>
+            <td style="color:var(--muted);font-size:0.82rem">${d.team}</td>
+            <td>
+                <input type="number" min="1" max="22" class="form-group input pos-input" 
+                       id="pos-${d.slug}" placeholder="—" 
+                       style="width:60px;padding:0.35rem 0.5rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:white;border-radius:8px;text-align:center;font-weight:700">
+            </td>
+            <td id="pts-${d.slug}" style="color:#6eff99;font-weight:700;font-size:0.85rem">—</td>`;
+        tbody.appendChild(tr);
+        tr.querySelector('input').addEventListener('input', e => {
+            const p = parseInt(e.target.value);
+            document.getElementById('pts-' + d.slug).textContent = isNaN(p) ? '—' : (pts(p) > 0 ? '+' + pts(p) : '—');
+        });
+    });
+}
+
+function autoSort() {
+    const positions = adminDrivers.map(d => ({
+        slug: d.slug,
+        val: parseInt(document.getElementById('pos-' + d.slug).value) || 99
+    })).sort((a,b) => a.val - b.val);
+
+    // Reassign sequential positions
+    positions.forEach((item, i) => {
+        const input = document.getElementById('pos-' + item.slug);
+        if (parseInt(input.value) > 0) {
+            input.value = i + 1;
+            document.getElementById('pts-' + item.slug).textContent = pts(i+1) > 0 ? '+' + pts(i+1) : '—';
+        }
+    });
+    showToast('Posiciones ordenadas secuencialmente');
+}
+
+function saveRaceResult() {
+    const roundNum = parseInt(document.getElementById('race-round').value);
+    if (!roundNum) { showToast('Seleccioná una carrera', true); return; }
+
+    const winnerSlug = document.getElementById('race-winner').value;
+    const poleSlug   = document.getElementById('race-pole').value;
+    const flSlug     = document.getElementById('race-fl').value;
+
+    const winner = adminDrivers.find(d => d.slug === winnerSlug);
+    const pole   = adminDrivers.find(d => d.slug === poleSlug);
+    const fl     = adminDrivers.find(d => d.slug === flSlug);
+
+    // Get positions
+    const positions = {};
+    let hasPositions = false;
+    adminDrivers.forEach(d => {
+        const val = parseInt(document.getElementById('pos-' + d.slug).value);
+        if (!isNaN(val) && val >= 1 && val <= 22) {
+            positions[d.slug] = val;
+            hasPositions = true;
+        } else {
+            positions[d.slug] = null;
+        }
+    });
+
+    if (!hasPositions) { showToast('Ingresá al menos una posición', true); return; }
+
+    // Find which race index this is in the results arrays
+    const raceInResults = adminRaces.findIndex(r => r.round === roundNum);
+    if (raceInResults < 0) {
+        // New race result — add to adminRaces
+        const calRace = adminCalendar.find(r => r.round === roundNum);
+        adminRaces.push({
+            round: roundNum,
+            name: calRace?.name?.replace('GP de ', '') || 'R' + roundNum,
+            short: 'R' + roundNum,
+            flag: calRace?.flag || '',
+            winner: winner?.name || '',
+            polePosition: pole?.name || '',
+            fastestLap: fl?.name || '',
+            sprint: calRace?.sprint || false
+        });
+    } else {
+        adminRaces[raceInResults].winner       = winner?.name || '';
+        adminRaces[raceInResults].polePosition = pole?.name  || '';
+        adminRaces[raceInResults].fastestLap   = fl?.name    || '';
+    }
+
+    // Update driver raceResults
+    const resultIdx = adminRaces.length - 1;
+    adminDrivers.forEach(d => {
+        if (!d.raceResults) d.raceResults = [];
+        // Find the correct index in results
+        const idx = adminRaces.findIndex(r => r.round === roundNum);
+        d.raceResults[idx] = positions[d.slug];
+    });
+
+    // Recalculate points from scratch
+    adminDrivers.forEach(d => {
+        d.points = d.raceResults.reduce((sum, pos) => sum + pts(pos || 0), 0);
+        d.wins = d.raceResults.filter(p => p === 1).length;
+        d.podiums = d.raceResults.filter(p => p >= 1 && p <= 3).length;
+    });
+
+    // Sort by points
+    adminDrivers.sort((a, b) => b.points - a.points || a.wins - b.wins);
+    adminDrivers.forEach((d, i) => d.position = i + 1);
+
+    // Update calendar status
+    const calIdx = adminCalendar.findIndex(r => r.round === roundNum);
+    if (calIdx >= 0) {
+        adminCalendar[calIdx].status = 'done';
+        adminCalendar[calIdx].winner = winner?.name || null;
+        // Set next race
+        const nextIdx = adminCalendar.findIndex(r => r.status === 'upcoming');
+        if (nextIdx >= 0) {
+            adminCalendar.forEach(r => { if (r.status === 'next') r.status = 'done'; });
+            adminCalendar[nextIdx].status = 'next';
+        }
+    }
+
+    // Show preview
+    const previewCard = document.getElementById('race-preview-card');
+    const previewContent = document.getElementById('race-preview-content');
+    const top10 = adminDrivers.filter(d => positions[d.slug] >= 1 && positions[d.slug] <= 10)
+        .sort((a,b) => (positions[a.slug]||99) - (positions[b.slug]||99));
+    
+    previewContent.innerHTML = `
+        <p style="color:var(--muted);font-size:0.85rem;margin:0 0 0.75rem">
+            ${adminCalendar.find(r=>r.round===roundNum)?.name || 'Carrera R'+roundNum} · 
+            Ganador: <strong>${winner?.name || '—'}</strong> · 
+            Pole: <strong>${pole?.name || '—'}</strong>
+        </p>
+        <table class="race-results-table">
+            <thead><tr><th>Pos</th><th>Piloto</th><th>Equipo</th><th>Puntos</th></tr></thead>
+            <tbody>${top10.map((d,i) => {
+                const color = window.teamColors[d.teamSlug] || '#888';
+                return `<tr>
+                    <td><strong>${positions[d.slug]}</strong></td>
+                    <td><span class="driver-dot" style="background:${color}"></span> <strong style="margin-left:6px">${d.name}</strong></td>
+                    <td style="color:var(--muted)">${d.team}</td>
+                    <td style="color:#6eff99;font-weight:700">+${pts(positions[d.slug])}</td>
+                </tr>`;
+            }).join('')}</tbody>
+        </table>`;
+    previewCard.style.display = '';
+    updateStandingsPreview();
+    showToast('✅ Resultado guardado. Exportá data.js para aplicar los cambios.');
+}
+
+// ── TAB: CHAMPIONSHIP ────────────────────────────────────────────────────────
+function initChampionship() {
+    const tbody = document.getElementById('standings-edit-tbody');
+    tbody.innerHTML = '';
+    adminDrivers.forEach(d => {
+        const color = window.teamColors[d.teamSlug] || '#888';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><span class="driver-dot" style="background:${color}"></span> <strong style="margin-left:6px">${d.name}</strong></td>
+            <td style="color:var(--muted);font-size:0.82rem">${d.team}</td>
+            <td><input type="number" min="0" class="pos-input" data-field="points" data-slug="${d.slug}" value="${d.points}" style="width:70px;padding:0.35rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:white;border-radius:8px;text-align:center"></td>
+            <td><input type="number" min="0" class="pos-input" data-field="wins"   data-slug="${d.slug}" value="${d.wins}"   style="width:50px;padding:0.35rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:white;border-radius:8px;text-align:center"></td>
+            <td><input type="number" min="0" class="pos-input" data-field="podiums" data-slug="${d.slug}" value="${d.podiums}" style="width:50px;padding:0.35rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:white;border-radius:8px;text-align:center"></td>
+            <td><input type="number" min="0" class="pos-input" data-field="poles"  data-slug="${d.slug}" value="${d.poles || 0}" style="width:50px;padding:0.35rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:white;border-radius:8px;text-align:center"></td>`;
+        tbody.appendChild(tr);
+    });
+
+    document.getElementById('save-standings-btn').addEventListener('click', saveStandings);
+    updateStandingsPreview();
+}
+
+function saveStandings() {
+    document.querySelectorAll('#standings-edit-tbody input').forEach(input => {
+        const d = adminDrivers.find(x => x.slug === input.dataset.slug);
+        if (d) d[input.dataset.field] = parseInt(input.value) || 0;
+    });
+    adminDrivers.sort((a,b) => b.points - a.points);
+    adminDrivers.forEach((d,i) => d.position = i+1);
+    updateStandingsPreview();
+    showToast('✅ Campeonato actualizado. Exportá para aplicar.');
+}
+
+function updateStandingsPreview() {
+    const preview = document.getElementById('standings-preview');
+    if (!preview) return;
+    const top10 = [...adminDrivers].sort((a,b) => b.points - a.points).slice(0, 10);
+    preview.innerHTML = top10.map((d,i) => {
+        const color = window.teamColors[d.teamSlug] || '#888';
+        return `<div class="preview-row">
+            <span class="preview-pos">${i+1}.</span>
+            <span class="driver-dot" style="background:${color}"></span>
+            <span class="preview-name">${d.name}</span>
+            <span class="preview-pts">${d.points} pts</span>
+        </div>`;
+    }).join('');
+}
+
+// ── TAB: CALENDAR ─────────────────────────────────────────────────────────────
+function initCalendarEdit() {
+    const tbody = document.getElementById('calendar-edit-tbody');
+    tbody.innerHTML = '';
+    adminCalendar.forEach(r => {
+        const tr = document.createElement('tr');
+        const statusColor = r.status === 'done' ? '#6eff99' : r.status === 'next' ? '#ffcc00' : 'var(--muted)';
+        tr.innerHTML = `
+            <td style="font-weight:700">${r.round}</td>
+            <td>${r.flag} ${r.name}${r.sprint ? ' <em style="color:#ffaa00;font-size:0.75rem">S</em>' : ''}</td>
+            <td style="color:var(--muted);font-size:0.82rem">${r.date}</td>
+            <td>
+                <select data-round="${r.round}" class="status-select" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:${statusColor};padding:0.3rem 0.5rem;border-radius:8px;font-size:0.82rem">
+                    <option value="done"     ${r.status==='done'     ? 'selected':''}>✅ done</option>
+                    <option value="next"     ${r.status==='next'     ? 'selected':''}>🔜 next</option>
+                    <option value="upcoming" ${r.status==='upcoming' ? 'selected':''}>⏳ upcoming</option>
+                </select>
+            </td>
+            <td>
+                <select data-round="${r.round}" class="winner-select" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:white;padding:0.3rem 0.5rem;border-radius:8px;font-size:0.82rem;max-width:160px">
+                    <option value="">— ninguno —</option>
+                    ${adminDrivers.map(d => `<option value="${d.name}" ${r.winner===d.name?'selected':''}>${d.name}</option>`).join('')}
+                </select>
+            </td>`;
+        tbody.appendChild(tr);
+    });
+
+    document.getElementById('save-calendar-btn').addEventListener('click', () => {
+        document.querySelectorAll('.status-select').forEach(sel => {
+            const r = adminCalendar.find(x => x.round === parseInt(sel.dataset.round));
+            if (r) r.status = sel.value;
+        });
+        document.querySelectorAll('.winner-select').forEach(sel => {
+            const r = adminCalendar.find(x => x.round === parseInt(sel.dataset.round));
+            if (r) r.winner = sel.value || null;
+        });
+        showToast('✅ Calendario actualizado. Exportá para aplicar.');
+    });
+}
+
+// ── TAB: EXPORT ───────────────────────────────────────────────────────────────
+function initExport() {
+    document.getElementById('export-races-btn').addEventListener('click', () => exportBlock('races'));
+    document.getElementById('export-drivers-btn').addEventListener('click', () => exportBlock('drivers'));
+    document.getElementById('export-calendar-btn').addEventListener('click', () => exportBlock('calendar'));
+    document.getElementById('export-all-btn').addEventListener('click', () => exportBlock('all'));
+    document.getElementById('copy-btn').addEventListener('click', copyCode);
+}
+
+function exportBlock(type) {
+    const output = document.getElementById('export-output');
+    const code = document.getElementById('code-output');
+    output.style.display = '';
+
+    let text = '';
+    if (type === 'races' || type === 'all') {
+        text += '// window.races — actualizado ' + new Date().toLocaleDateString('es-AR') + '\n';
+        text += 'window.races = ' + JSON.stringify(adminRaces, null, 4) + ';\n\n';
+    }
+    if (type === 'drivers' || type === 'all') {
+        // Only export points/results/position fields to keep it manageable
+        const driverExport = adminDrivers.map(d => ({
+            ...d,
+            points: d.points,
+            position: d.position,
+            wins: d.wins,
+            podiums: d.podiums,
+            poles: d.poles,
+            fastestLaps: d.fastestLaps,
+            raceResults: d.raceResults
+        }));
+        text += '// window.drivers — puntos actualizados ' + new Date().toLocaleDateString('es-AR') + '\n';
+        text += 'window.drivers = ' + JSON.stringify(driverExport, null, 4) + ';\n\n';
+    }
+    if (type === 'calendar' || type === 'all') {
+        text += '// window.calendar — actualizado ' + new Date().toLocaleDateString('es-AR') + '\n';
+        text += 'window.calendar = ' + JSON.stringify(adminCalendar, null, 4) + ';\n\n';
+    }
+    code.textContent = text;
+}
+
+function copyCode() {
+    const code = document.getElementById('code-output').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+        showToast('📋 Código copiado al portapapeles');
+    }).catch(() => {
+        showToast('No se pudo copiar — seleccionalo y copialo manualmente', true);
+    });
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    initRaceResult();
+    initChampionship();
+    initCalendarEdit();
+    initExport();
+});
+</script>
+</body>
+</html>

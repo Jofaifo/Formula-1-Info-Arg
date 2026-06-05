@@ -1772,3 +1772,70 @@ p { margin: 0 0 1rem; color: var(--muted); }
 /* ─── QUICK LINK CARD FOR COMPARE/CIRCUITS ───────────────────────────────────── */
 .quick-link-card.compare-card .ql-icon { font-size: 1.6rem; }
 
+
+/* ─── LOGO HERO ──────────────────────────────────────────────────────────────── */
+.hero-logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.25rem;
+}
+.hero-logo-img {
+    width: 54px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.15);
+    flex-shrink: 0;
+}
+.hero-logo-wrap h1 {
+    margin: 0;
+}
+
+/* ─── FOOTER MEJORADO ────────────────────────────────────────────────────────── */
+.footer-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    text-align: center;
+    padding: 0.5rem 0;
+}
+.footer-logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+.footer-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.15);
+}
+.footer-brand {
+    font-weight: 800;
+    font-size: 1rem;
+    color: white;
+    letter-spacing: 0.04em;
+}
+.footer-credit {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0;
+}
+.footer-credit a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 700;
+}
+.footer-credit a:hover {
+    text-decoration: underline;
+}
+.footer-disclaimer {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.28);
+    margin: 0;
+    max-width: 600px;
+    line-height: 1.5;
+}
