@@ -727,13 +727,26 @@ function runCompare() {
 }
 
 // ─── CIRCUITOS ───────────────────────────────────────────────────────────────
+async function fetchCircuitSVG(slug) {
+    try {
+        const res = await fetch(`img/circuits/${slug}.svg`);
+        if (!res.ok) return null;
+        const text = await res.text();
+        // Extract just the path data from the SVG
+        const match = text.match(/<path[^>]+d="([^"]+)"/);
+        const vbMatch = text.match(/viewBox="([^"]+)"/);
+        return { d: match ? match[1] : null, viewBox: vbMatch ? vbMatch[1] : '0 0 500 500' };
+    } catch { return null; }
+}
+
 function renderCircuits() {
     const grid = document.getElementById('circuits-grid');
     if (!grid || !window.circuits) return;
 
+    // Render shells first, then async fill in SVGs
     grid.innerHTML = (window.circuits || []).map(c => {
         const flagHtml = c.flagImg ? `<img src="${c.flagImg}" class="detail-flag-img" alt="">` : (c.flag || '');
-        return `<div class="card circuit-card">
+        return `<div class="card circuit-card" id="cc-${c.slug}">
             <div class="circuit-header">
                 <div>
                     <div class="circuit-country">${flagHtml} ${c.country} · ${c.city}</div>
@@ -741,19 +754,8 @@ function renderCircuits() {
                 </div>
                 <div class="circuit-year">Desde ${c.firstGP}</div>
             </div>
-            <div class="circuit-layout-wrap">
-                <svg viewBox="${c.viewBox}" class="circuit-svg" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <filter id="glow-${c.slug}">
-                            <feGaussianBlur stdDeviation="3" result="blur"/>
-                            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-                        </filter>
-                    </defs>
-                    <path d="${c.layout}" fill="none" stroke="${c.color}" stroke-width="6"
-                          stroke-linejoin="round" stroke-linecap="round" opacity="0.25"/>
-                    <path d="${c.layout}" fill="none" stroke="${c.color}" stroke-width="3"
-                          stroke-linejoin="round" stroke-linecap="round"/>
-                </svg>
+            <div class="circuit-layout-wrap" id="clw-${c.slug}">
+                <div class="circuit-svg-loading"></div>
             </div>
             <div class="circuit-stats">
                 <div class="circuit-stat"><span class="cs-val">${c.length} km</span><span class="cs-label">Longitud</span></div>
@@ -764,4 +766,21 @@ function renderCircuits() {
             <p class="circuit-desc">${c.description}</p>
         </div>`;
     }).join('');
+
+    // Async load each SVG
+    window.circuits.forEach(async c => {
+        const wrap = document.getElementById(`clw-${c.slug}`);
+        if (!wrap) return;
+        const svgData = await fetchCircuitSVG(c.slug);
+        if (svgData && svgData.d) {
+            wrap.innerHTML = `<svg viewBox="${svgData.viewBox}" class="circuit-svg" xmlns="http://www.w3.org/2000/svg">
+                <path d="${svgData.d}" fill="none" stroke="${c.color}" stroke-width="5"
+                      stroke-linejoin="round" stroke-linecap="round" opacity="0.3"/>
+                <path d="${svgData.d}" fill="none" stroke="${c.color}" stroke-width="2.5"
+                      stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>`;
+        } else {
+            wrap.innerHTML = `<div class="circuit-no-svg">Trazado no disponible</div>`;
+        }
+    });
 }
