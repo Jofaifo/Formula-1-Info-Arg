@@ -9,17 +9,17 @@ window.races = [
 
 // ─── COLORES HEX POR EQUIPO ──────────────────────────────────────────────────
 window.teamColors = {
-    'mercedes':        '#00D2BE',
-    'ferrari':         '#E10600',
-    'mclaren':         '#FF8700',
-    'red-bull-racing': '#3671C6',
-    'alpine':          '#0093CC',
-    'racing-bulls':    '#6692FF',
-    'haas':            '#B6BABD',
-    'williams':        '#64C4FF',
-    'audi':            '#C0C0C0',
-    'cadillac':        '#00827F',
-    'aston-martin':    '#358C75',
+    'mercedes':        '#00D2BE',  // Petronas teal accent (body: negro/plata)
+    'ferrari':         '#E8002D',  // Rosso Scuderia 2026
+    'mclaren':         '#FF8000',  // Papaya Orange
+    'red-bull-racing': '#1B3FAB',  // Azul Ford/RBR 2026
+    'alpine':          '#005AFF',  // Azul Alpine + rosa BWT
+    'racing-bulls':    '#3671C6',  // Azul Ford (cuerpo blanco)
+    'haas':            '#E10600',  // Rojo Toyota (cuerpo blanco)
+    'williams':        '#005AFF',  // Azul gloss 2026
+    'audi':            '#C0C0C0',  // Plata con naranja
+    'cadillac':        '#888888',  // Negro/blanco Chevron
+    'aston-martin':    '#00594F',  // British Racing Green
 };
 
 // ─── PILOTOS ─────────────────────────────────────────────────────────────────
@@ -330,7 +330,7 @@ window.constructors = [
         slug: 'ferrari', position: 2, name: 'Ferrari',
         flag: '🇮🇹', flagImg: 'img/flags/it.png',
         originFlag: 'img/flags/it.png', baseFlag: 'img/flags/it.png',
-        points: 124, code: 'FER', colorClass: 'team-ferrari', color: '#E10600',
+        points: 124, code: 'FER', colorClass: 'team-ferrari', color: '#E8002D',
         image: 'img/ferrari.png',
         base: 'Maranello, Italia', origin: 'Italia',
         teamPrincipal: 'Frédéric Vasseur', engine: 'Ferrari', championships: 16,
@@ -342,7 +342,7 @@ window.constructors = [
         slug: 'mclaren', position: 3, name: 'McLaren',
         flag: '🇬🇧', flagImg: 'img/flags/gb.png',
         originFlag: 'img/flags/gb.png', baseFlag: 'img/flags/gb.png',
-        points: 90, code: 'MCL', colorClass: 'team-mclaren', color: '#FF8700',
+        points: 90, code: 'MCL', colorClass: 'team-mclaren', color: '#FF8000',
         image: 'img/mclaren.png',
         base: 'Woking, Reino Unido', origin: 'Reino Unido',
         teamPrincipal: 'Andrea Stella', engine: 'Mercedes', championships: 8,
@@ -354,7 +354,7 @@ window.constructors = [
         slug: 'red-bull-racing', position: 4, name: 'Red Bull Racing',
         flag: '🇦🇹', flagImg: 'img/flags/at.png',
         originFlag: 'img/flags/at.png', baseFlag: 'img/flags/gb.png',
-        points: 45, code: 'RBR', colorClass: 'team-redbull', color: '#3671C6',
+        points: 45, code: 'RBR', colorClass: 'team-redbull', color: '#1B3FAB',
         image: 'img/red-bull.png',
         base: 'Milton Keynes, Reino Unido', origin: 'Austria',
         teamPrincipal: 'Christian Horner', engine: 'Red Bull Powertrains', championships: 7,
@@ -366,7 +366,7 @@ window.constructors = [
         slug: 'alpine', position: 5, name: 'Alpine',
         flag: '🇫🇷', flagImg: 'img/flags/fr.png',
         originFlag: 'img/flags/fr.png', baseFlag: 'img/flags/gb.png',
-        points: 29, code: 'ALP', colorClass: 'team-alpine', color: '#0093CC',
+        points: 29, code: 'ALP', colorClass: 'team-alpine', color: '#005AFF',
         image: 'img/alpine.png',
         base: 'Enstone, Reino Unido', origin: 'Francia',
         teamPrincipal: 'Otmar Szafnauer', engine: 'Renault', championships: 1,
@@ -378,7 +378,7 @@ window.constructors = [
         slug: 'racing-bulls', position: 6, name: 'Racing Bulls',
         flag: '🇮🇹', flagImg: 'img/flags/it.png',
         originFlag: 'img/flags/at.png', baseFlag: 'img/flags/it.png',
-        points: 15, code: 'RBL', colorClass: 'team-racing-bulls', color: '#6692FF',
+        points: 15, code: 'RBL', colorClass: 'team-racing-bulls', color: '#3671C6',
         image: 'img/visa-rb.png',
         base: 'Faenza, Italia', origin: 'Austria / Italia',
         teamPrincipal: 'Laurent Mekies', engine: 'Red Bull Powertrains', championships: 0,
@@ -390,7 +390,7 @@ window.constructors = [
         slug: 'haas', position: 7, name: 'Haas',
         flag: '🇺🇸', flagImg: 'img/flags/us.png',
         originFlag: 'img/flags/us.png', baseFlag: 'img/flags/us.png',
-        points: 15, code: 'HAA', colorClass: 'team-haas', color: '#B6BABD',
+        points: 15, code: 'HAA', colorClass: 'team-haas', color: '#E10600',
         image: 'img/haas.png',
         base: 'Kannapolis, EE.UU.', origin: 'Estados Unidos',
         teamPrincipal: 'Ayao Komatsu', engine: 'Ferrari', championships: 0,
@@ -402,7 +402,7 @@ window.constructors = [
         slug: 'williams', position: 8, name: 'Williams',
         flag: '🇬🇧', flagImg: 'img/flags/gb.png',
         originFlag: 'img/flags/gb.png', baseFlag: 'img/flags/gb.png',
-        points: 5, code: 'WIL', colorClass: 'team-williams', color: '#64C4FF',
+        points: 5, code: 'WIL', colorClass: 'team-williams', color: '#005AFF',
         image: 'img/williams.png',
         base: 'Grove, Reino Unido', origin: 'Reino Unido',
         teamPrincipal: 'James Vowles', engine: 'Mercedes', championships: 9,
@@ -426,7 +426,7 @@ window.constructors = [
         slug: 'cadillac', position: 10, name: 'Cadillac',
         flag: '🇺🇸', flagImg: 'img/flags/us.png',
         originFlag: 'img/flags/us.png', baseFlag: 'img/flags/us.png',
-        points: 0, code: 'CAD', colorClass: 'team-cadillac', color: '#00827F',
+        points: 0, code: 'CAD', colorClass: 'team-cadillac', color: '#888888',
         image: 'img/cadillac.png',
         base: 'Detroit, EE.UU.', origin: 'Estados Unidos',
         teamPrincipal: 'Mario Andretti Jr.', engine: 'Ferrari', championships: 0,
@@ -438,7 +438,7 @@ window.constructors = [
         slug: 'aston-martin', position: 11, name: 'Aston Martin',
         flag: '🇬🇧', flagImg: 'img/flags/gb.png',
         originFlag: 'img/flags/gb.png', baseFlag: 'img/flags/gb.png',
-        points: 0, code: 'AST', colorClass: 'team-aston', color: '#358C75',
+        points: 0, code: 'AST', colorClass: 'team-aston', color: '#00594F',
         image: 'img/aston-martin.png',
         base: 'Silverstone, Reino Unido', origin: 'Reino Unido',
         teamPrincipal: 'Andy Cowell', engine: 'Mercedes', championships: 0,

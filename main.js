@@ -554,8 +554,24 @@ function initPage() {
         initToday();
         return;
     }
-    if (body.classList.contains('page-liveries')) {
-        renderLiveries();
+    if (body.classList.contains('page-livrees')) {
+        renderLivrees();
+        return;
+    }
+    if (body.classList.contains('page-stats')) {
+        renderStats();
+        return;
+    }
+    if (body.classList.contains('page-timeline')) {
+        renderTimeline();
+        return;
+    }
+    if (body.classList.contains('page-predictor')) {
+        renderPredictor();
+        return;
+    }
+    if (body.classList.contains('page-trivia')) {
+        renderTrivia();
         return;
     }
 }
@@ -1358,8 +1374,8 @@ function initToday() {
 }
 
 // ─── RENDER: LIVRÉES ──────────────────────────────────────────────────────────
-function renderLiveries() {
-    const grid = document.getElementById('liveries-grid');
+function renderLivrees() {
+    const grid = document.getElementById('livrées-grid');
     if (!grid) return;
 
     grid.innerHTML = (window.constructors || []).map(team => {
@@ -1368,31 +1384,45 @@ function renderLiveries() {
         // Generate a simple livery SVG based on team colors
         const livSvg = generateLiverySVG(team);
 
-        return `<div class="card livery-card" style="border-top: 3px solid ${c1}">
-            <div class="livery-team-header">
+        const livreeDesc = {
+            'mercedes':        'Negro y plata con acentos verde Petronas. El W17 mantiene la identidad oscura de las últimas temporadas.',
+            'ferrari':         'Rojo Scuderia más intenso que en 2025, inspirado en la livrée especial de Monza. Más blanco alrededor del cockpit.',
+            'mclaren':         'Papaya naranja predominante con negro antracita. Campeones del mundo 2025 sin cambios drásticos.',
+            'red-bull-racing': 'Azul más intenso en homenaje al nuevo socio Ford. Combinado con rojo y amarillo dorado.',
+            'alpine':          'Azul eléctrico con rosa BWT como en temporadas anteriores. Continuidad visual pese al cambio a motor Mercedes.',
+            'racing-bulls':    'Cuerpo blanco con acentos azul Ford y rojo. Elegida la más bella de la grilla por los fanáticos en 2025.',
+            'haas':            'Blanco predominante con negro y rojo Toyota Gazoo Racing, nuevo patrocinador titular.',
+            'williams':        'Azul gloss vibrante con negro en los pontones y detalles blancos. Celebra el aniversario del FW14B de Mansell.',
+            'audi':            'Plata con acentos naranja en la parte trasera. Los aros de Audi en el alerón trasero son el elemento más llamativo.',
+            'cadillac':        'Negro y blanco asimétrico con patrón inspirado en el chevron de Cadillac. Revelada en el Super Bowl LX.',
+            'aston-martin':    'Verde British Racing Green oscuro con dorado Aramco. Primer auto diseñado por Adrian Newey.',
+        }[team.slug] || team.description || '';
+        return `<div class="card livree-card" style="border-top: 3px solid ${c1}">
+            <div class="livree-team-header">
                 <img src="${team.flagImg || ''}" class="detail-flag-img" alt="">
                 <div>
-                    <h3 class="livery-team-name" style="color:${c1}">${team.name}</h3>
-                    <div class="livery-engine">${team.engine} Power Unit · ${team.base}</div>
+                    <h3 class="livree-team-name" style="color:${c1}">${team.name}</h3>
+                    <div class="livree-engine">${team.engine} Power Unit · ${team.base}</div>
                 </div>
             </div>
-            <div class="livery-svg-wrap">
+            <div class="livree-svg-wrap">
                 ${livSvg}
             </div>
-            <div class="livery-colors">
+            <div class="livree-colors">
                 ${getLiveryColors(team).map(col => `
-                    <div class="livery-color-chip">
-                        <div class="livery-color-swatch" style="background:${col.hex}"></div>
-                        <span class="livery-color-name">${col.name}</span>
+                    <div class="livree-color-chip">
+                        <div class="livree-color-swatch" style="background:${col.hex}"></div>
+                        <span class="livree-color-name">${col.name}</span>
                     </div>
                 `).join('')}
             </div>
-            <div class="livery-drivers">
+            ${livreeDesc ? `<p class="livree-desc">${livreeDesc}</p>` : ''}
+            <div class="livree-drivers">
                 ${drivers.map(d => `
-                    <a href="driver.html?slug=${d.slug}" class="livery-driver-chip">
-                        <img src="${d.flagImg}" class="livery-driver-flag" alt="">
+                    <a href="driver.html?slug=${d.slug}" class="livree-driver-chip">
+                        <img src="${d.flagImg}" class="livree-driver-flag" alt="">
                         <span>${d.name}</span>
-                        <span class="livery-driver-num" style="color:${c1}">#${d.code}</span>
+                        <span class="livree-driver-num" style="color:${c1}">#${d.code}</span>
                     </a>
                 `).join('')}
             </div>
@@ -1401,62 +1431,1227 @@ function renderLiveries() {
 }
 
 function getLiveryColors(team) {
+    // Colores reales de las livrées 2026 según presentaciones oficiales
     const palettes = {
-        'mercedes':        [{ hex:'#00D2BE', name:'Petronas Teal' }, { hex:'#000000', name:'Negro' }, { hex:'#FFFFFF', name:'Blanco' }],
-        'ferrari':         [{ hex:'#E10600', name:'Rosso Corsa' }, { hex:'#FFCC00', name:'Giallo' }, { hex:'#FFFFFF', name:'Blanco' }],
-        'mclaren':         [{ hex:'#FF8700', name:'Papaya Orange' }, { hex:'#000000', name:'Negro' }, { hex:'#0090D0', name:'Azul Zak' }],
-        'red-bull-racing': [{ hex:'#3671C6', name:'Azul RBR' }, { hex:'#CC1E4A', name:'Rojo' }, { hex:'#FFC906', name:'Amarillo' }],
-        'alpine':          [{ hex:'#0093CC', name:'Azul Alpine' }, { hex:'#FF69B4', name:'Rosa BWT' }, { hex:'#FFFFFF', name:'Blanco' }],
-        'racing-bulls':    [{ hex:'#6692FF', name:'Azul claro' }, { hex:'#CC1E4A', name:'Rojo' }, { hex:'#FFFFFF', name:'Blanco' }],
-        'haas':            [{ hex:'#B6BABD', name:'Gris' }, { hex:'#E10600', name:'Rojo' }, { hex:'#FFFFFF', name:'Blanco' }],
-        'williams':        [{ hex:'#64C4FF', name:'Azul Williams' }, { hex:'#FFFFFF', name:'Blanco' }, { hex:'#E10600', name:'Rojo Martini' }],
-        'audi':            [{ hex:'#C0C0C0', name:'Plata Audi' }, { hex:'#000000', name:'Negro' }, { hex:'#BB0A30', name:'Rojo' }],
-        'cadillac':        [{ hex:'#00827F', name:'Verde oscuro' }, { hex:'#FFD700', name:'Dorado' }, { hex:'#FFFFFF', name:'Blanco' }],
-        'aston-martin':    [{ hex:'#358C75', name:'British Racing Green' }, { hex:'#FFD700', name:'Dorado' }, { hex:'#FFFFFF', name:'Blanco' }],
+        'mercedes':        [{ hex:'#1a1a1a', name:'Negro' }, { hex:'#A8A8A8', name:'Plata' }, { hex:'#00D2BE', name:'Verde Petronas' }],
+        'ferrari':         [{ hex:'#E8002D', name:'Rosso Scuderia' }, { hex:'#FFFFFF', name:'Blanco' }, { hex:'#FFCC00', name:'Giallo' }],
+        'mclaren':         [{ hex:'#FF8000', name:'Papaya Orange' }, { hex:'#1a1a1a', name:'Antracita' }, { hex:'#FFFFFF', name:'Blanco' }],
+        'red-bull-racing': [{ hex:'#1B3FAB', name:'Azul Ford/RBR' }, { hex:'#CC1E4A', name:'Rojo' }, { hex:'#FFC906', name:'Amarillo' }],
+        'alpine':          [{ hex:'#005AFF', name:'Azul Alpine' }, { hex:'#FF67C7', name:'Rosa BWT' }, { hex:'#FFFFFF', name:'Blanco' }],
+        'racing-bulls':    [{ hex:'#FFFFFF', name:'Blanco' }, { hex:'#3671C6', name:'Azul Ford' }, { hex:'#CC1E4A', name:'Rojo' }],
+        'haas':            [{ hex:'#FFFFFF', name:'Blanco' }, { hex:'#111111', name:'Negro' }, { hex:'#E10600', name:'Rojo Toyota' }],
+        'williams':        [{ hex:'#005AFF', name:'Azul gloss' }, { hex:'#111111', name:'Negro' }, { hex:'#FFFFFF', name:'Blanco' }],
+        'audi':            [{ hex:'#C0C0C0', name:'Plata' }, { hex:'#111111', name:'Negro' }, { hex:'#FF6600', name:'Naranja acento' }],
+        'cadillac':        [{ hex:'#111111', name:'Negro' }, { hex:'#FFFFFF', name:'Blanco' }, { hex:'#888888', name:'Gris Chevron' }],
+        'aston-martin':    [{ hex:'#00594F', name:'British Racing Green' }, { hex:'#FFD700', name:'Dorado Aramco' }, { hex:'#FFFFFF', name:'Blanco' }],
     };
     return palettes[team.slug] || [{ hex: team.color, name: 'Color principal' }];
 }
 
 function generateLiverySVG(team) {
-    const c = team.color || '#888';
     const cols = getLiveryColors(team);
+    const c1 = cols[0]?.hex || '#888';
     const c2 = cols[1]?.hex || '#222';
     const c3 = cols[2]?.hex || '#fff';
-    // Simple F1 car silhouette side view using SVG paths
-    return `<svg viewBox="0 0 400 160" class="livery-svg" xmlns="http://www.w3.org/2000/svg">
-        <!-- Shadow -->
-        <ellipse cx="200" cy="148" rx="140" ry="8" fill="rgba(0,0,0,0.3)"/>
-        <!-- Body main -->
-        <path d="M 60,90 L 75,70 L 100,60 L 140,52 L 200,50 L 260,52 L 295,58 L 315,68 L 330,80 L 335,90 L 330,98 L 60,98 Z"
-              fill="${c}" />
-        <!-- Cockpit -->
-        <path d="M 155,52 L 165,38 L 185,32 L 210,32 L 230,36 L 240,50 Z"
-              fill="${c2}" opacity="0.9"/>
-        <!-- Nose -->
-        <path d="M 60,90 L 75,70 L 85,78 L 80,90 Z" fill="${c2}"/>
-        <!-- Rear wing -->
-        <rect x="318" y="60" width="18" height="38" rx="3" fill="${c2}"/>
-        <rect x="310" y="56" width="34" height="7" rx="3" fill="${c}"/>
-        <!-- Front wing -->
-        <rect x="42" y="90" width="30" height="5" rx="2" fill="${c}"/>
-        <rect x="36" y="92" width="42" height="4" rx="2" fill="${c2}"/>
-        <!-- Side pods -->
-        <path d="M 150,90 L 150,108 L 270,108 L 280,98 L 290,90 Z"
-              fill="${c2}" opacity="0.7"/>
-        <!-- Wheels -->
-        <circle cx="105" cy="108" r="22" fill="#1a1a1a" stroke="#333" stroke-width="2"/>
-        <circle cx="105" cy="108" r="13" fill="#2a2a2a"/>
-        <circle cx="105" cy="108" r="5" fill="${c}"/>
-        <circle cx="295" cy="108" r="22" fill="#1a1a1a" stroke="#333" stroke-width="2"/>
-        <circle cx="295" cy="108" r="13" fill="#2a2a2a"/>
-        <circle cx="295" cy="108" r="5" fill="${c}"/>
-        <!-- Halo -->
-        <path d="M 165,38 Q 195,28 225,35" fill="none" stroke="${c3}" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
-        <!-- Livery accent stripe -->
-        <path d="M 100,60 L 310,68" fill="none" stroke="${c3}" stroke-width="3" opacity="0.4"/>
-        <!-- Team name -->
-        <text x="200" y="82" text-anchor="middle" fill="${c3}" font-size="11"
-              font-weight="900" font-family="Arial" opacity="0.85" letter-spacing="2">${team.name.toUpperCase()}</text>
+
+    // Livery-specific schemes for accurate rendering
+    const schemes = {
+        'mercedes': {
+            body: '#1a1a1a', sidepod: '#2a2a2a', nose: '#1a1a1a',
+            accent: '#00D2BE', cockpit: '#111', halo: '#00D2BE',
+            frontWing: '#00D2BE', rearWing: '#1a1a1a', stripe: '#A8A8A8'
+        },
+        'ferrari': {
+            body: '#E8002D', sidepod: '#cc0022', nose: '#E8002D',
+            accent: '#FFFFFF', cockpit: '#cc0022', halo: '#FFCC00',
+            frontWing: '#E8002D', rearWing: '#E8002D', stripe: '#FFFFFF'
+        },
+        'mclaren': {
+            body: '#FF8000', sidepod: '#1a1a1a', nose: '#FF8000',
+            accent: '#FFFFFF', cockpit: '#1a1a1a', halo: '#FF8000',
+            frontWing: '#FF8000', rearWing: '#1a1a1a', stripe: '#FF8000'
+        },
+        'red-bull-racing': {
+            body: '#1B3FAB', sidepod: '#162f85', nose: '#1B3FAB',
+            accent: '#FFC906', cockpit: '#CC1E4A', halo: '#FFC906',
+            frontWing: '#1B3FAB', rearWing: '#1B3FAB', stripe: '#CC1E4A'
+        },
+        'alpine': {
+            body: '#005AFF', sidepod: '#0044cc', nose: '#005AFF',
+            accent: '#FF67C7', cockpit: '#003db3', halo: '#FFFFFF',
+            frontWing: '#005AFF', rearWing: '#005AFF', stripe: '#FF67C7'
+        },
+        'racing-bulls': {
+            body: '#FFFFFF', sidepod: '#e8e8e8', nose: '#FFFFFF',
+            accent: '#3671C6', cockpit: '#3671C6', halo: '#3671C6',
+            frontWing: '#FFFFFF', rearWing: '#3671C6', stripe: '#CC1E4A'
+        },
+        'haas': {
+            body: '#FFFFFF', sidepod: '#e8e8e8', nose: '#FFFFFF',
+            accent: '#E10600', cockpit: '#111111', halo: '#E10600',
+            frontWing: '#FFFFFF', rearWing: '#111111', stripe: '#E10600'
+        },
+        'williams': {
+            body: '#005AFF', sidepod: '#0044cc', nose: '#005AFF',
+            accent: '#FFFFFF', cockpit: '#111111', halo: '#FFFFFF',
+            frontWing: '#005AFF', rearWing: '#111111', stripe: '#FFFFFF'
+        },
+        'audi': {
+            body: '#C0C0C0', sidepod: '#aaaaaa', nose: '#C0C0C0',
+            accent: '#FF6600', cockpit: '#111111', halo: '#FF6600',
+            frontWing: '#C0C0C0', rearWing: '#111111', stripe: '#FF6600'
+        },
+        'cadillac': {
+            body: '#111111', sidepod: '#222222', nose: '#111111',
+            accent: '#FFFFFF', cockpit: '#FFFFFF', halo: '#888888',
+            frontWing: '#111111', rearWing: '#FFFFFF', stripe: '#888888'
+        },
+        'aston-martin': {
+            body: '#00594F', sidepod: '#004a42', nose: '#00594F',
+            accent: '#FFD700', cockpit: '#003d36', halo: '#FFD700',
+            frontWing: '#00594F', rearWing: '#00594F', stripe: '#FFD700'
+        },
+    };
+
+    const s = schemes[team.slug] || {
+        body: c1, sidepod: c2, nose: c1, accent: c3,
+        cockpit: c2, halo: c3, frontWing: c1, rearWing: c2, stripe: c3
+    };
+
+    const textColor = ['#FFFFFF','#FFF','white'].includes(s.body.toUpperCase()) || s.body === '#FFFFFF' ? '#111' : '#fff';
+
+    return `<svg viewBox="0 0 440 170" class="livree-svg" xmlns="http://www.w3.org/2000/svg">
+        <!-- Ground shadow -->
+        <ellipse cx="218" cy="158" rx="155" ry="7" fill="rgba(0,0,0,0.35)"/>
+
+        <!-- === REAR WING === -->
+        <rect x="352" y="52" width="6" height="42" rx="2" fill="${s.rearWing}"/>
+        <rect x="342" y="48" width="40" height="8" rx="3" fill="${s.rearWing}"/>
+        <rect x="344" y="56" width="36" height="4" rx="1" fill="${s.accent}" opacity="0.7"/>
+
+        <!-- === MAIN BODY === -->
+        <!-- Sidepods -->
+        <path d="M 155,88 L 150,112 L 285,112 L 298,102 L 308,88 Z" fill="${s.sidepod}"/>
+        <!-- Body top surface -->
+        <path d="M 68,92 L 82,70 L 108,58 L 148,50 L 210,48 L 272,50 L 308,58 L 330,72 L 340,88 L 335,98 L 68,98 Z" fill="${s.body}"/>
+        <!-- Livery stripe -->
+        <path d="M 108,58 L 310,66" fill="none" stroke="${s.stripe}" stroke-width="3.5" stroke-linecap="round" opacity="0.55"/>
+
+        <!-- === ENGINE COVER / INTAKE === -->
+        <path d="M 190,48 L 195,40 L 230,38 L 245,46" fill="none" stroke="${s.accent}" stroke-width="2" opacity="0.5"/>
+
+        <!-- === COCKPIT === -->
+        <path d="M 163,50 L 172,34 L 192,27 L 218,27 L 238,32 L 248,48 Z" fill="${s.cockpit}"/>
+        <!-- Windscreen -->
+        <path d="M 172,34 L 182,26 L 218,25 L 234,32" fill="none" stroke="${s.accent}" stroke-width="1.5" opacity="0.6"/>
+
+        <!-- === HALO === -->
+        <path d="M 170,34 Q 200,22 232,30" fill="none" stroke="${s.halo}" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 195,26 L 198,34" stroke="${s.halo}" stroke-width="4" stroke-linecap="round"/>
+
+        <!-- === NOSE === -->
+        <path d="M 68,92 L 80,70 L 92,74 L 88,92 Z" fill="${s.nose}"/>
+        <path d="M 68,92 L 55,94 L 50,97 L 55,99 L 68,98 Z" fill="${s.nose}"/>
+
+        <!-- === FRONT WING === -->
+        <rect x="28" y="95" width="40" height="5" rx="2" fill="${s.frontWing}"/>
+        <rect x="20" y="97" width="56" height="3.5" rx="1.5" fill="${s.accent}" opacity="0.7"/>
+        <rect x="26" y="100" width="44" height="3" rx="1.5" fill="${s.frontWing}"/>
+
+        <!-- === WHEELS (with tires) === -->
+        <!-- Front wheel -->
+        <ellipse cx="110" cy="116" rx="6" ry="18" fill="#1a1a1a"/>
+        <rect x="92" y="100" width="12" height="32" rx="6" fill="#1a1a1a"/>
+        <ellipse cx="98" cy="116" rx="6" ry="18" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+        <ellipse cx="98" cy="116" rx="3.5" ry="11" fill="#2d2d2d"/>
+        <ellipse cx="98" cy="116" rx="1.5" ry="5" fill="${s.accent}"/>
+        <!-- Rear wheel -->
+        <rect x="296" y="98" width="14" height="36" rx="7" fill="#1a1a1a"/>
+        <ellipse cx="303" cy="116" rx="7" ry="20" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+        <ellipse cx="303" cy="116" rx="4" ry="12" fill="#2d2d2d"/>
+        <ellipse cx="303" cy="116" rx="1.8" ry="5.5" fill="${s.accent}"/>
+
+        <!-- === TEAM NAME === -->
+        <text x="195" y="80" text-anchor="middle" fill="${textColor === '#111' ? '#333' : '#fff'}"
+              font-size="10" font-weight="900" font-family="Arial Black, Arial"
+              letter-spacing="2.5" opacity="0.9">${team.name.toUpperCase()}</text>
     </svg>`;
 }
 
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BLOQUE 2 — ESTADÍSTICAS, TIMELINE, RÉCORDS, HEAD-TO-HEAD, MATRIZ
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ─── RENDER: ESTADÍSTICAS GLOBALES ───────────────────────────────────────────
+function renderStats() {
+    const el = document.getElementById('stats-content');
+    if (!el) return;
+
+    const drivers = window.drivers;
+    const races   = window.races;
+    const PTS = [25,18,15,12,10,8,6,4,2,1];
+
+    // ── Récords de temporada
+    const records = computeSeasonRecords();
+
+    // ── Victorias por equipo
+    const winsByTeam = {};
+    const podiumsByTeam = {};
+    const polesByTeam = {};
+    drivers.forEach(d => {
+        if (!winsByTeam[d.teamSlug])   winsByTeam[d.teamSlug]   = 0;
+        if (!podiumsByTeam[d.teamSlug]) podiumsByTeam[d.teamSlug] = 0;
+        if (!polesByTeam[d.teamSlug])  polesByTeam[d.teamSlug]  = 0;
+        winsByTeam[d.teamSlug]   += d.wins   || 0;
+        podiumsByTeam[d.teamSlug] += d.podiums || 0;
+        polesByTeam[d.teamSlug]  += d.poles  || 0;
+    });
+
+    // ── Nationalidades en la parrilla
+    const natCount = {};
+    drivers.forEach(d => { natCount[d.nationality] = (natCount[d.nationality] || 0) + 1; });
+    const natSorted = Object.entries(natCount).sort((a,b) => b[1]-a[1]);
+
+    // ── Constructores carrera a carrera
+    const constructorRaceHistory = buildConstructorRaceHistory();
+
+    el.innerHTML = `
+        <!-- RÉCORDS -->
+        <section class="stats-section">
+            <h2 class="stats-section-title">🏆 Récords de la temporada</h2>
+            <div class="records-grid">
+                ${records.map(r => `
+                    <div class="card record-card" style="border-left: 3px solid ${r.color}">
+                        <div class="record-label">${r.label}</div>
+                        <div class="record-value" style="color:${r.color}">${r.value}</div>
+                        <div class="record-holder">${r.holder}</div>
+                        ${r.sub ? `<div class="record-sub">${r.sub}</div>` : ''}
+                    </div>`).join('')}
+            </div>
+        </section>
+
+        <!-- VICTORIAS POR EQUIPO -->
+        <section class="stats-section">
+            <h2 class="stats-section-title">🏁 Victorias por escudería</h2>
+            <div class="card stats-bar-card">
+                ${buildBarChart(winsByTeam, 'Victorias')}
+            </div>
+        </section>
+
+        <!-- POLES POR EQUIPO -->
+        <section class="stats-section">
+            <h2 class="stats-section-title">⚡ Poles por escudería</h2>
+            <div class="card stats-bar-card">
+                ${buildBarChart(polesByTeam, 'Poles')}
+            </div>
+        </section>
+
+        <!-- PODIOS POR EQUIPO -->
+        <section class="stats-section">
+            <h2 class="stats-section-title">🥇 Podios por escudería</h2>
+            <div class="card stats-bar-card">
+                ${buildBarChart(podiumsByTeam, 'Podios')}
+            </div>
+        </section>
+
+        <!-- MATRIZ DE RESULTADOS -->
+        <section class="stats-section">
+            <h2 class="stats-section-title">📊 Tabla de posiciones carrera a carrera (top 10)</h2>
+            <div class="card" style="overflow-x:auto">
+                ${buildResultsMatrix()}
+            </div>
+        </section>
+
+        <!-- HEAD-TO-HEAD COMPAÑEROS -->
+        <section class="stats-section">
+            <h2 class="stats-section-title">⚔️ Head-to-head entre compañeros de equipo</h2>
+            <div class="h2h-grid">
+                ${buildH2H()}
+            </div>
+        </section>
+
+        <!-- NACIONALIDADES -->
+        <section class="stats-section">
+            <h2 class="stats-section-title">🌍 Nacionalidades en la parrilla</h2>
+            <div class="card stats-nat-card">
+                ${natSorted.map(([nat, count]) => {
+                    const driver = drivers.find(d => d.nationality === nat);
+                    const flagImg = driver?.flagImg || '';
+                    return `<div class="nat-row">
+                        <img src="${flagImg}" class="nat-flag" alt="${nat}">
+                        <span class="nat-name">${nat}</span>
+                        <div class="nat-bar-track">
+                            <div class="nat-bar" style="width:${(count/drivers.length)*100}%"></div>
+                        </div>
+                        <span class="nat-count">${count} piloto${count>1?'s':''}</span>
+                    </div>`;
+                }).join('')}
+            </div>
+        </section>
+
+        <!-- CONSTRUCTORES CARRERA A CARRERA -->
+        <section class="stats-section">
+            <h2 class="stats-section-title">📈 Evolución constructores carrera a carrera</h2>
+            <div class="card" style="padding:1.5rem">
+                ${buildConstructorsChart(constructorRaceHistory)}
+            </div>
+        </section>
+    `;
+}
+
+function computeSeasonRecords() {
+    const drivers = window.drivers;
+    const races = window.races;
+    const PTS = [25,18,15,12,10,8,6,4,2,1];
+
+    // Leader
+    const leader = drivers[0];
+    const leaderColor = window.getTeamColor(leader.teamSlug);
+
+    // Best single race (most points in one race)
+    let bestRacePts = 0, bestRaceDriver = null, bestRaceName = '';
+    drivers.forEach(d => {
+        (d.raceResults || []).forEach((pos, i) => {
+            const p = pos >= 1 && pos <= 10 ? PTS[pos-1] : 0;
+            if (p > bestRacePts) {
+                bestRacePts = p;
+                bestRaceDriver = d;
+                bestRaceName = races[i]?.name || '';
+            }
+        });
+    });
+
+    // Most wins
+    const topWins = [...drivers].sort((a,b) => b.wins - a.wins)[0];
+
+    // Most poles
+    const topPoles = [...drivers].sort((a,b) => (b.poles||0) - (a.poles||0))[0];
+
+    // Most podiums
+    const topPodiums = [...drivers].sort((a,b) => b.podiums - a.podiums)[0];
+
+    // Most consistent (lowest average position, min 3 races)
+    let bestAvg = 99, bestAvgDriver = null;
+    drivers.forEach(d => {
+        const valid = (d.raceResults||[]).filter(p => p !== null);
+        if (valid.length >= 3) {
+            const avg = valid.reduce((a,b) => a+b, 0) / valid.length;
+            if (avg < bestAvg) { bestAvg = avg; bestAvgDriver = d; }
+        }
+    });
+
+    // Best team mate ratio
+    const teams = [...new Set(drivers.map(d => d.teamSlug))];
+    let bestH2H = null, bestH2HTeam = '';
+    teams.forEach(slug => {
+        const pair = drivers.filter(d => d.teamSlug === slug);
+        if (pair.length === 2) {
+            let winsA = 0, winsB = 0;
+            const n = Math.min((pair[0].raceResults||[]).length, (pair[1].raceResults||[]).length);
+            for (let i = 0; i < n; i++) {
+                const a = pair[0].raceResults[i], b = pair[1].raceResults[i];
+                if (a !== null && b !== null) {
+                    if (a < b) winsA++; else if (b < a) winsB++;
+                }
+            }
+            const total = winsA + winsB;
+            if (total > 0) {
+                const ratio = Math.max(winsA, winsB) / total;
+                if (!bestH2H || ratio > bestH2H.ratio) {
+                    const winner = winsA > winsB ? pair[0] : pair[1];
+                    bestH2H = { ratio, driver: winner, winsA, winsB, total };
+                    bestH2HTeam = pair[0].team;
+                }
+            }
+        }
+    });
+
+    return [
+        {
+            label: 'Líder del campeonato',
+            value: `${leader.points} pts`,
+            holder: leader.name,
+            sub: `${leader.team} · P1`,
+            color: leaderColor
+        },
+        {
+            label: 'Más victorias',
+            value: `${topWins.wins} victoria${topWins.wins !== 1 ? 's' : ''}`,
+            holder: topWins.name,
+            sub: topWins.team,
+            color: window.getTeamColor(topWins.teamSlug)
+        },
+        {
+            label: 'Más poles',
+            value: `${topPoles.poles || 0} pole${(topPoles.poles||0) !== 1 ? 's' : ''}`,
+            holder: topPoles.name,
+            sub: topPoles.team,
+            color: window.getTeamColor(topPoles.teamSlug)
+        },
+        {
+            label: 'Más podios',
+            value: `${topPodiums.podiums} podio${topPodiums.podiums !== 1 ? 's' : ''}`,
+            holder: topPodiums.name,
+            sub: topPodiums.team,
+            color: window.getTeamColor(topPodiums.teamSlug)
+        },
+        {
+            label: 'Piloto más constante',
+            value: bestAvgDriver ? `P${bestAvg.toFixed(1)} promedio` : '—',
+            holder: bestAvgDriver?.name || '—',
+            sub: bestAvgDriver?.team || '',
+            color: bestAvgDriver ? window.getTeamColor(bestAvgDriver.teamSlug) : '#888'
+        },
+        {
+            label: 'Mayor puntuación en carrera',
+            value: `+${bestRacePts} pts`,
+            holder: bestRaceDriver?.name || '—',
+            sub: bestRaceName,
+            color: bestRaceDriver ? window.getTeamColor(bestRaceDriver.teamSlug) : '#888'
+        },
+    ];
+}
+
+function buildBarChart(dataBySlug, label) {
+    const teams = window.constructors;
+    const max = Math.max(...Object.values(dataBySlug), 1);
+    const rows = teams
+        .filter(t => (dataBySlug[t.slug] || 0) > 0)
+        .sort((a,b) => (dataBySlug[b.slug]||0) - (dataBySlug[a.slug]||0));
+
+    if (rows.length === 0) return `<p style="color:var(--muted);padding:1rem">Sin datos aún.</p>`;
+
+    return `<div class="stats-bars">
+        ${rows.map(t => {
+            const val = dataBySlug[t.slug] || 0;
+            const pct = (val / max) * 100;
+            const color = window.getTeamColor(t.slug);
+            return `<div class="stats-bar-row">
+                <div class="stats-bar-name">
+                    <img src="${t.flagImg}" class="nat-flag" alt="">
+                    <span>${t.name}</span>
+                </div>
+                <div class="stats-bar-track">
+                    <div class="stats-bar-fill" style="width:${pct}%;background:${color}"></div>
+                </div>
+                <span class="stats-bar-val" style="color:${color}">${val}</span>
+            </div>`;
+        }).join('')}
+    </div>`;
+}
+
+function buildResultsMatrix() {
+    const races = window.races;
+    const top10 = window.drivers.slice(0, 10);
+    const PTS = [25,18,15,12,10,8,6,4,2,1];
+
+    if (!races.length) return '<p style="color:var(--muted);padding:1rem">Sin carreras disputadas.</p>';
+
+    const headers = races.map(r => `<th class="matrix-race-th">${r.flag}<br><small>${r.short}</small></th>`).join('');
+
+    const rows = top10.map(d => {
+        const color = window.getTeamColor(d.teamSlug);
+        const cells = races.map((_, i) => {
+            const pos = d.raceResults?.[i];
+            if (pos === null || pos === undefined) return '<td class="matrix-cell matrix-null">—</td>';
+            const pts = pos >= 1 && pos <= 10 ? PTS[pos-1] : 0;
+            const cls = pos === 1 ? 'matrix-p1' : pos <= 3 ? 'matrix-p3' : pos <= 10 ? 'matrix-pts' : 'matrix-nopt';
+            return `<td class="matrix-cell ${cls}" title="+${pts} pts">${pos}</td>`;
+        }).join('');
+        return `<tr>
+            <td class="matrix-driver-cell">
+                <span class="matrix-dot" style="background:${color}"></span>
+                <span>${d.code}</span>
+            </td>
+            ${cells}
+            <td class="matrix-total" style="color:${color}">${d.points}</td>
+        </tr>`;
+    }).join('');
+
+    return `<table class="matrix-table">
+        <thead>
+            <tr>
+                <th class="matrix-driver-th">Piloto</th>
+                ${headers}
+                <th class="matrix-total-th">PTS</th>
+            </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function buildH2H() {
+    const teams = window.constructors;
+    const drivers = window.drivers;
+    const races = window.races;
+
+    return teams.map(team => {
+        const pair = drivers.filter(d => d.teamSlug === team.slug);
+        if (pair.length < 2) return '';
+        const [dA, dB] = pair;
+        const color = window.getTeamColor(team.slug);
+        let wA = 0, wB = 0, ties = 0;
+        const n = Math.min((dA.raceResults||[]).length, (dB.raceResults||[]).length, races.length);
+
+        for (let i = 0; i < n; i++) {
+            const a = dA.raceResults?.[i], b = dB.raceResults?.[i];
+            if (a !== null && b !== null && a !== undefined && b !== undefined) {
+                if (a < b) wA++;
+                else if (b < a) wB++;
+                else ties++;
+            }
+        }
+        const total = wA + wB;
+        const pctA = total > 0 ? Math.round((wA/total)*100) : 50;
+        const pctB = 100 - pctA;
+
+        return `<div class="card h2h-card" style="border-top: 2px solid ${color}">
+            <div class="h2h-team">${team.name}</div>
+            <div class="h2h-names">
+                <span style="color:${color}">${dA.code}</span>
+                <span class="h2h-vs">vs</span>
+                <span style="color:${color}">${dB.code}</span>
+            </div>
+            <div class="h2h-bar-wrap">
+                <div class="h2h-bar-a" style="width:${pctA}%;background:${color};opacity:0.9"></div>
+                <div class="h2h-bar-b" style="width:${pctB}%;background:${color};opacity:0.4"></div>
+            </div>
+            <div class="h2h-scores">
+                <span class="h2h-score ${wA > wB ? 'h2h-winner' : ''}">${wA}</span>
+                <span class="h2h-score-label">${total > 0 ? `de ${total}` : 'carreras'}</span>
+                <span class="h2h-score ${wB > wA ? 'h2h-winner' : ''}">${wB}</span>
+            </div>
+            <div class="h2h-pts-row">
+                <span style="color:${color}">${dA.points} pts</span>
+                <span style="color:var(--muted);font-size:0.72rem">puntos</span>
+                <span style="color:${color}">${dB.points} pts</span>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function buildConstructorRaceHistory() {
+    const teams = window.constructors;
+    const PTS = [25,18,15,12,10,8,6,4,2,1];
+    const n = window.races.length;
+    const history = {};
+
+    teams.forEach(team => {
+        const teamDrivers = window.drivers.filter(d => d.teamSlug === team.slug);
+        let cum = 0;
+        history[team.slug] = [];
+        for (let i = 0; i < n; i++) {
+            teamDrivers.forEach(d => {
+                const pos = d.raceResults?.[i];
+                if (pos !== null && pos !== undefined && pos >= 1 && pos <= 10) {
+                    cum += PTS[pos-1];
+                }
+            });
+            history[team.slug].push(cum);
+        }
+    });
+    return history;
+}
+
+function buildConstructorsChart(history) {
+    const W = 600, H = 220;
+    const PAD = { top: 12, right: 80, bottom: 28, left: 44 };
+    const iW = W - PAD.left - PAD.right;
+    const iH = H - PAD.top - PAD.bottom;
+    const races = window.races;
+    const n = races.length;
+    if (n === 0) return '<p style="color:var(--muted)">Sin datos aún.</p>';
+
+    const teams = window.constructors;
+    const maxPts = Math.max(...Object.values(history).map(arr => Math.max(...arr, 0)), 1);
+    const xS = i => PAD.left + (n > 1 ? (i / (n-1)) * iW : iW/2);
+    const yS = v => PAD.top + iH - (v / maxPts) * iH;
+
+    const lines = teams.map(team => {
+        const data = history[team.slug] || [];
+        if (!data.length) return '';
+        const color = window.getTeamColor(team.slug);
+        const poly = data.map((v, i) => `${xS(i)},${yS(v)}`).join(' ');
+        const lastX = xS(data.length - 1) + 6;
+        const lastY = yS(data[data.length-1]);
+        return `
+            <polyline points="${poly}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round"/>
+            <circle cx="${xS(data.length-1)}" cy="${yS(data[data.length-1])}" r="4" fill="${color}" stroke="#111" stroke-width="1.5"/>
+            <text x="${lastX}" y="${lastY+4}" fill="${color}" font-size="9" font-weight="700">${team.code}</text>`;
+    }).join('');
+
+    const xLabels = races.map((r, i) =>
+        `<text x="${xS(i)}" y="${H - 4}" text-anchor="middle" fill="#555" font-size="9">${r.short}</text>`
+    ).join('');
+
+    // Y axis labels
+    const yLabels = [0, 0.25, 0.5, 0.75, 1].map(f => {
+        const v = Math.round(maxPts * f);
+        const y = yS(v);
+        return `<text x="${PAD.left - 6}" y="${y + 4}" text-anchor="end" fill="#444" font-size="8">${v}</text>
+                <line x1="${PAD.left}" y1="${y}" x2="${PAD.left + iW}" y2="${y}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`;
+    }).join('');
+
+    return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;overflow:visible">
+        ${yLabels}${xLabels}${lines}
+    </svg>`;
+}
+
+// ─── RENDER: TIMELINE DEL CAMPEONATO ─────────────────────────────────────────
+function renderTimeline() {
+    const el = document.getElementById('timeline-content');
+    if (!el) return;
+
+    const drivers = window.drivers;
+    const races = window.races;
+    const PTS = [25,18,15,12,10,8,6,4,2,1];
+    const top8 = drivers.slice(0, 8);
+
+    // Build cumulative points after each race
+    const cumData = {}; // slug → [pts after each race]
+    top8.forEach(d => { cumData[d.slug] = window.getCumulativePoints(d); });
+
+    // Championship leader after each race
+    const leaders = races.map((_, i) => {
+        let best = null, bestPts = -1;
+        top8.forEach(d => {
+            const pts = cumData[d.slug][i] || 0;
+            if (pts > bestPts) { bestPts = pts; best = d; }
+        });
+        return best;
+    });
+
+    if (!races.length) {
+        el.innerHTML = '<div class="card" style="padding:2rem;color:var(--muted)">Sin carreras disputadas aún.</div>';
+        return;
+    }
+
+    // Gap chart
+    const W = 600, H = 260;
+    const PAD = { top: 16, right: 90, bottom: 28, left: 44 };
+    const iW = W - PAD.left - PAD.right;
+    const iH = H - PAD.top - PAD.bottom;
+    const n = races.length;
+    const maxPts = Math.max(...top8.map(d => Math.max(...(cumData[d.slug] || [0]))), 1);
+    const xS = i => PAD.left + (n > 1 ? (i / (n-1)) * iW : iW/2);
+    const yS = v => PAD.top + iH - (v / maxPts) * iH;
+
+    const lines = top8.map(d => {
+        const color = window.getTeamColor(d.teamSlug);
+        const data = cumData[d.slug] || [];
+        if (!data.length) return '';
+        const poly = data.map((v, i) => `${xS(i)},${yS(v)}`).join(' ');
+        const lastY = yS(data[data.length-1]);
+        const lastX = xS(data.length-1) + 6;
+        return `
+            <polyline points="${poly}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>
+            ${data.map((v, i) => `<circle cx="${xS(i)}" cy="${yS(v)}" r="3.5" fill="${color}" stroke="#111" stroke-width="1.5"/>`).join('')}
+            <text x="${lastX}" y="${lastY+4}" fill="${color}" font-size="9" font-weight="700">${d.code}</text>`;
+    }).join('');
+
+    const xLabels = races.map((r, i) =>
+        `<text x="${xS(i)}" y="${H-4}" text-anchor="middle" fill="#555" font-size="9">${r.flag} ${r.short}</text>`
+    ).join('');
+
+    const yLabels = [0, 0.25, 0.5, 0.75, 1].map(f => {
+        const v = Math.round(maxPts * f);
+        return `<text x="${PAD.left-6}" y="${yS(v)+4}" text-anchor="end" fill="#444" font-size="8">${v}</text>
+                <line x1="${PAD.left}" y1="${yS(v)}" x2="${PAD.left+iW}" y2="${yS(v)}" stroke="rgba(255,255,255,0.05)"/>`;
+    }).join('');
+
+    // Race-by-race leader cards
+    const raceCards = races.map((race, i) => {
+        const leader = leaders[i];
+        const leaderPts = leader ? cumData[leader.slug][i] : 0;
+        const color = leader ? window.getTeamColor(leader.teamSlug) : '#888';
+        const winner = window.drivers.find(d => d.name === race.winner);
+        const winColor = winner ? window.getTeamColor(winner.teamSlug) : '#888';
+
+        // Standings after this race (top 3)
+        const standing = [...top8].sort((a,b) => (cumData[b.slug][i]||0) - (cumData[a.slug][i]||0)).slice(0,3);
+
+        return `<div class="card timeline-race-card">
+            <div class="tl-race-header">
+                <div class="tl-round">R${race.round}</div>
+                <div class="tl-race-info">
+                    <div class="tl-race-name">${race.flag} ${race.name}${race.sprint ? ' <em class="sprint-tag">S</em>' : ''}</div>
+                    <div class="tl-winner" style="color:${winColor}">🏆 ${race.winner}</div>
+                </div>
+                <div class="tl-leader-wrap">
+                    <div class="tl-leader-label">Líder</div>
+                    <div class="tl-leader-name" style="color:${color}">${leader?.code || '—'}</div>
+                    <div class="tl-leader-pts">${leaderPts} pts</div>
+                </div>
+            </div>
+            <div class="tl-podium">
+                ${standing.map((d, ri) => {
+                    const c = window.getTeamColor(d.teamSlug);
+                    const pts = cumData[d.slug][i] || 0;
+                    return `<div class="tl-pos-chip">
+                        <span class="tl-pos-num">${ri+1}</span>
+                        <span class="tl-pos-code" style="color:${c}">${d.code}</span>
+                        <span class="tl-pos-pts">${pts}</span>
+                    </div>`;
+                }).join('')}
+            </div>
+        </div>`;
+    }).join('');
+
+    el.innerHTML = `
+        <!-- Chart -->
+        <div class="card" style="padding:1.5rem">
+            <h2 style="margin:0 0 1rem;font-size:1rem">Evolución del campeonato — Top 8</h2>
+            <svg viewBox="0 0 ${W} ${H}" style="width:100%;overflow:visible">
+                ${yLabels}${xLabels}${lines}
+            </svg>
+            <div class="tl-legend">
+                ${top8.map(d => {
+                    const c = window.getTeamColor(d.teamSlug);
+                    return `<span style="display:inline-flex;align-items:center;gap:4px;margin:2px 8px 2px 0">
+                        <span style="width:10px;height:10px;border-radius:50%;background:${c};display:inline-block;flex-shrink:0"></span>
+                        <span style="font-size:0.75rem;color:#aaa">${d.name}</span>
+                    </span>`;
+                }).join('')}
+            </div>
+        </div>
+
+        <!-- Race cards -->
+        <div class="timeline-races-grid">${raceCards}</div>
+    `;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BLOQUE 3 — PREDICTOR, TRIVIA, EXPORTAR .ICS, BUSCADOR GLOBAL Ctrl+K
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ─── PREDICTOR ───────────────────────────────────────────────────────────────
+const PRED_KEY = 'f1arg_predictions';
+
+function loadPredictions() {
+    try { return JSON.parse(localStorage.getItem(PRED_KEY)) || {}; }
+    catch { return {}; }
+}
+function savePredictions(data) {
+    localStorage.setItem(PRED_KEY, JSON.stringify(data));
+}
+
+function renderPredictor() {
+    const el = document.getElementById('predictor-content');
+    if (!el) return;
+
+    const preds = loadPredictions();
+    const nextRace = window.calendar.find(r => r.status === 'next' || r.status === 'upcoming');
+    const doneRaces = window.calendar.filter(r => r.status === 'done');
+
+    // Scoring: 3 pts exact position, 1 pt correct driver wrong position
+    function scorePredict(pred, race) {
+        if (!pred || !race) return null;
+        const actual = window.races.find(r => r.round === race.round);
+        if (!actual) return null;
+        // For done races we have winner — only score P1 for now
+        let score = 0, max = 9;
+        const positions = ['p1','p2','p3'];
+        const actuals = [actual.winner, null, null]; // expand when we have full podium
+        positions.forEach((pos, i) => {
+            if (!pred[pos] || !actuals[i]) return;
+            if (pred[pos] === actuals[i]) score += 3;
+            else if (actuals.includes(pred[pos])) score += 1;
+        });
+        return { score, max, pct: Math.round((score/3)*100) };
+    }
+
+    // Build prediction form for next race
+    const driverOptions = window.drivers.map(d =>
+        `<option value="${d.name}">${d.name} (${d.team})</option>`
+    ).join('');
+
+    const nextPred = nextRace ? (preds[nextRace.round] || {}) : {};
+    const nextForm = nextRace ? `
+        <div class="card pred-form-card">
+            <h2 class="pred-race-title">
+                ${nextRace.flag} ${nextRace.name}
+                ${nextRace.sprint ? '<em class="sprint-tag">Sprint</em>' : ''}
+            </h2>
+            <p class="pred-race-sub">${nextRace.date} · ${nextRace.circuit}</p>
+            <div class="pred-podium-inputs">
+                ${['p1','p2','p3'].map((pos, i) => `
+                    <div class="pred-pos-group">
+                        <div class="pred-pos-medal">${['🥇','🥈','🥉'][i]}</div>
+                        <label class="pred-pos-label">P${i+1}</label>
+                        <select class="pred-select" id="pred-${pos}">
+                            <option value="">— Elegir piloto —</option>
+                            ${driverOptions}
+                        </select>
+                    </div>`).join('')}
+            </div>
+            <button class="btn-primary pred-save-btn" id="pred-save-btn" style="margin-top:1rem">
+                Guardar predicción 🎯
+            </button>
+            <div id="pred-saved-msg" class="pred-saved-msg" style="display:none">
+                ✅ Predicción guardada para ${nextRace.name}
+            </div>
+        </div>` : `<div class="card" style="padding:1.5rem;color:var(--muted)">No hay próxima carrera disponible.</div>`;
+
+    // History of predictions vs results
+    const historyCards = doneRaces.map(race => {
+        const pred = preds[race.round];
+        const actual = window.races.find(r => r.round === race.round);
+        if (!pred && !actual) return '';
+        const s = pred ? scorePredict(pred, race) : null;
+
+        return `<div class="card pred-hist-card">
+            <div class="pred-hist-header">
+                <span class="pred-hist-race">${race.flag} ${race.name}</span>
+                ${s ? `<span class="pred-hist-score" style="color:${s.pct >= 66 ? '#6eff99' : s.pct >= 33 ? '#ffcc00' : '#ff6b6b'}">
+                    ${s.score}/3 pts
+                </span>` : '<span class="pred-hist-score" style="color:var(--muted)">Sin predicción</span>'}
+            </div>
+            <div class="pred-hist-compare">
+                <div class="pred-hist-col">
+                    <div class="pred-hist-col-title">Tu predicción</div>
+                    ${pred ? ['p1','p2','p3'].map((p,i) => `
+                        <div class="pred-hist-row">
+                            <span class="pred-hist-pos">${['🥇','🥈','🥉'][i]}</span>
+                            <span class="pred-hist-name">${pred[p] || '—'}</span>
+                        </div>`).join('') : '<p style="color:var(--muted);font-size:0.82rem">No predijiste esta carrera</p>'}
+                </div>
+                <div class="pred-hist-divider"></div>
+                <div class="pred-hist-col">
+                    <div class="pred-hist-col-title">Resultado real</div>
+                    <div class="pred-hist-row">
+                        <span class="pred-hist-pos">🥇</span>
+                        <span class="pred-hist-name">${actual?.winner || '—'}</span>
+                    </div>
+                    <div class="pred-hist-row"><span class="pred-hist-pos">🥈</span><span class="pred-hist-name" style="color:var(--muted)">—</span></div>
+                    <div class="pred-hist-row"><span class="pred-hist-pos">🥉</span><span class="pred-hist-name" style="color:var(--muted)">—</span></div>
+                </div>
+            </div>
+        </div>`;
+    }).filter(Boolean).reverse().join('');
+
+    // Total score
+    let totalScore = 0, totalMax = 0;
+    doneRaces.forEach(race => {
+        const s = scorePredict(preds[race.round], race);
+        if (s) { totalScore += s.score; totalMax += s.max; }
+    });
+    const totalPct = totalMax > 0 ? Math.round((totalScore/totalMax)*100) : 0;
+
+    el.innerHTML = `
+        ${nextForm}
+        ${totalMax > 0 ? `
+        <div class="card pred-score-summary">
+            <div class="pred-score-label">Tu puntaje total</div>
+            <div class="pred-score-value" style="color:${totalPct>=66?'#6eff99':totalPct>=33?'#ffcc00':'#ff6b6b'}">${totalScore} <span style="font-size:1rem;color:var(--muted)">/ ${totalMax} pts posibles</span></div>
+            <div class="pred-score-bar-track"><div class="pred-score-bar" style="width:${totalPct}%;background:${totalPct>=66?'#6eff99':totalPct>=33?'#ffcc00':'#ff6b6b'}"></div></div>
+        </div>` : ''}
+        ${historyCards ? `<div>
+            <h3 style="font-size:0.85rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin:0.5rem 0 0.75rem">Historial de predicciones</h3>
+            <div class="pred-history-grid">${historyCards}</div>
+        </div>` : ''}
+    `;
+
+    // Pre-fill saved values
+    if (nextRace) {
+        ['p1','p2','p3'].forEach(pos => {
+            const sel = document.getElementById(`pred-${pos}`);
+            if (sel && nextPred[pos]) sel.value = nextPred[pos];
+        });
+        document.getElementById('pred-save-btn')?.addEventListener('click', () => {
+            const p1 = document.getElementById('pred-p1')?.value;
+            const p2 = document.getElementById('pred-p2')?.value;
+            const p3 = document.getElementById('pred-p3')?.value;
+            if (!p1 && !p2 && !p3) return;
+            const all = loadPredictions();
+            all[nextRace.round] = { p1, p2, p3, savedAt: new Date().toISOString() };
+            savePredictions(all);
+            const msg = document.getElementById('pred-saved-msg');
+            if (msg) { msg.style.display = ''; setTimeout(() => msg.style.display = 'none', 3000); }
+        });
+    }
+}
+
+// ─── TRIVIA ───────────────────────────────────────────────────────────────────
+window.triviaQuestions = [
+    // 2026
+    { q: '¿Quién lidera el campeonato de pilotos en 2026?', opts: ['George Russell','Kimi Antonelli','Charles Leclerc','Lando Norris'], ans: 1, cat: '2026' },
+    { q: '¿Qué reemplazó al DRS en el reglamento 2026?', opts: ['ERS Boost','Active Aero Mode','MOS (Manual Override System)','Kinetic Push'], ans: 2, cat: '2026' },
+    { q: '¿Cuántas carreras tiene el calendario 2026 después de las cancelaciones?', opts: ['24','23','22','21'], ans: 2, cat: '2026' },
+    { q: '¿Cuál fue el primer equipo nuevo en entrar a la F1 en 2026?', opts: ['Audi','Cadillac','Andretti','Porsche'], ans: 1, cat: '2026' },
+    { q: '¿Qué equipo presentó su livrée 2026 durante el Super Bowl LX?', opts: ['Audi','Williams','Cadillac','Haas'], ans: 2, cat: '2026' },
+    { q: '¿Qué par de GPs fue cancelado en 2026 por conflicto bélico?', opts: ['Turquía y Rusia','Bahrein y Arabia Saudita','Israel y Emiratos','Qatar y Kuwait'], ans: 1, cat: '2026' },
+    { q: '¿Qué equipo contrató a Adrian Newey para diseñar su auto 2026?', opts: ['Ferrari','Red Bull','Aston Martin','Williams'], ans: 2, cat: '2026' },
+    { q: '¿Cuál es el motor proveedor de Alpine en 2026?', opts: ['Renault','Ferrari','Honda','Mercedes'], ans: 3, cat: '2026' },
+    { q: '¿Quién ganó la primera carrera de 2026 en Australia?', opts: ['Kimi Antonelli','Lando Norris','George Russell','Charles Leclerc'], ans: 2, cat: '2026' },
+    { q: '¿De qué ciudad argentina es originario Franco Colapinto?', opts: ['Buenos Aires','Mendoza','San Andrés de Giles','Neuquén'], ans: 2, cat: '2026' },
+    // Historia
+    { q: '¿Cuántos campeonatos mundiales tiene Lewis Hamilton?', opts: ['5','6','7','8'], ans: 2, cat: 'Historia' },
+    { q: '¿En qué año se disputó el primer Campeonato del Mundo de F1?', opts: ['1948','1950','1952','1955'], ans: 1, cat: 'Historia' },
+    { q: '¿Quién tiene más victorias en la historia de la F1?', opts: ['Michael Schumacher','Ayrton Senna','Lewis Hamilton','Max Verstappen'], ans: 2, cat: 'Historia' },
+    { q: '¿En qué circuito se disputa el GP de Mónaco?', opts: ['Circuit de Monaco','Montecarlo GP Track','Principality Circuit','Monaco Street Circuit'], ans: 0, cat: 'Historia' },
+    { q: '¿Qué piloto ganó 4 títulos consecutivos con Red Bull entre 2010 y 2013?', opts: ['Mark Webber','Daniel Ricciardo','Sebastian Vettel','Nico Rosberg'], ans: 2, cat: 'Historia' },
+    { q: '¿Cuántas vueltas tiene el GP de Mónaco?', opts: ['65','72','78','80'], ans: 2, cat: 'Historia' },
+    { q: '¿Qué significa "undercut" en F1?', opts: ['Adelantamiento en pista','Entrar a boxes antes que el rival para ganar posición','Estrategia de neumáticos duros','Penalidad por salida falsa'], ans: 1, cat: 'Reglamento' },
+    { q: '¿Cuántos puntos vale una victoria en F1?', opts: ['20','25','30','10'], ans: 1, cat: 'Reglamento' },
+    { q: '¿Qué es el "parc fermé"?', opts: ['Zona de boxes','Período en que no se pueden modificar los autos','Área de prensa','Pit lane cerrado'], ans: 1, cat: 'Reglamento' },
+    { q: '¿Cuántos puntos se dan al ganador de una carrera Sprint?', opts: ['10','12','8','25'], ans: 2, cat: 'Reglamento' },
+    { q: '¿Qué país tiene más GPs en el calendario 2026?', opts: ['Reino Unido','Alemania','Estados Unidos','Italia'], ans: 2, cat: '2026' },
+    { q: '¿Cuál es el circuito más corto del calendario 2026?', opts: ['Mónaco','Red Bull Ring','Hungaroring','Zandvoort'], ans: 1, cat: 'Circuitos' },
+    { q: '¿Qué circuito es conocido como el "Templo de la Velocidad"?', opts: ['Silverstone','Suzuka','Monza','Spa'], ans: 2, cat: 'Circuitos' },
+    { q: '¿En qué país se ubica el circuito de Suzuka?', opts: ['China','Corea del Sur','Japón','Tailandia'], ans: 2, cat: 'Circuitos' },
+    { q: '¿Cuántos títulos de constructores tiene Ferrari?', opts: ['12','14','16','18'], ans: 2, cat: 'Historia' },
+];
+
+const TRIVIA_KEY = 'f1arg_trivia_score';
+
+function renderTrivia() {
+    const el = document.getElementById('trivia-content');
+    if (!el) return;
+
+    let state = {
+        questions: shuffle([...window.triviaQuestions]).slice(0, 10),
+        current: 0,
+        score: 0,
+        answered: [],
+        finished: false,
+        catFilter: 'Todos'
+    };
+
+    function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function renderQuestion() {
+        if (state.finished) { renderResults(); return; }
+        const q = state.questions[state.current];
+        const shuffledOpts = q.opts.map((opt, i) => ({ opt, i }));
+
+        el.innerHTML = `
+            <div class="card trivia-progress-card">
+                <div class="trivia-progress-header">
+                    <span class="trivia-cat-tag">${q.cat}</span>
+                    <span class="trivia-counter">${state.current + 1} / ${state.questions.length}</span>
+                    <span class="trivia-score-live">🎯 ${state.score} pts</span>
+                </div>
+                <div class="trivia-progress-bar-track">
+                    <div class="trivia-progress-bar" style="width:${(state.current/state.questions.length)*100}%"></div>
+                </div>
+            </div>
+            <div class="card trivia-question-card">
+                <h2 class="trivia-question">${q.q}</h2>
+                <div class="trivia-options" id="trivia-opts">
+                    ${shuffledOpts.map(({opt, i}) => `
+                        <button class="trivia-opt-btn" data-idx="${i}">${opt}</button>
+                    `).join('')}
+                </div>
+                <div id="trivia-feedback" class="trivia-feedback" style="display:none"></div>
+                <button id="trivia-next-btn" class="btn-primary trivia-next-btn" style="display:none">
+                    ${state.current + 1 < state.questions.length ? 'Siguiente →' : 'Ver resultados 🏁'}
+                </button>
+            </div>`;
+
+        document.querySelectorAll('.trivia-opt-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const chosen = parseInt(btn.dataset.idx);
+                const correct = q.ans;
+                const isCorrect = chosen === correct;
+                if (isCorrect) state.score++;
+                state.answered.push({ q: q.q, chosen, correct, isCorrect });
+
+                document.querySelectorAll('.trivia-opt-btn').forEach(b => {
+                    b.disabled = true;
+                    if (parseInt(b.dataset.idx) === correct) b.classList.add('trivia-correct');
+                    else if (parseInt(b.dataset.idx) === chosen && !isCorrect) b.classList.add('trivia-wrong');
+                });
+
+                const fb = document.getElementById('trivia-feedback');
+                fb.style.display = '';
+                fb.innerHTML = isCorrect
+                    ? `<span class="trivia-fb-correct">✅ ¡Correcto! +1 punto</span>`
+                    : `<span class="trivia-fb-wrong">❌ Incorrecto. La respuesta era: <strong>${q.opts[correct]}</strong></span>`;
+
+                document.getElementById('trivia-next-btn').style.display = '';
+            });
+        });
+
+        document.getElementById('trivia-next-btn')?.addEventListener('click', () => {
+            state.current++;
+            if (state.current >= state.questions.length) state.finished = true;
+            renderQuestion();
+        });
+    }
+
+    function renderResults() {
+        const pct = Math.round((state.score / state.questions.length) * 100);
+        const emoji = pct >= 80 ? '🏆' : pct >= 60 ? '🎖' : pct >= 40 ? '👍' : '📚';
+        const msg = pct >= 80 ? '¡Experto en F1!' : pct >= 60 ? '¡Buen nivel!' : pct >= 40 ? 'Podés mejorar' : 'Seguí aprendiendo';
+
+        // Save best score
+        const prev = parseInt(localStorage.getItem(TRIVIA_KEY) || '0');
+        if (state.score > prev) localStorage.setItem(TRIVIA_KEY, state.score);
+
+        el.innerHTML = `
+            <div class="card trivia-results-card">
+                <div class="trivia-result-emoji">${emoji}</div>
+                <h2 class="trivia-result-title">${msg}</h2>
+                <div class="trivia-result-score">${state.score}<span style="font-size:1.5rem;color:var(--muted)"> / ${state.questions.length}</span></div>
+                <div class="trivia-result-pct" style="color:${pct>=80?'#6eff99':pct>=60?'#ffcc00':'#ff6b6b'}">${pct}% de aciertos</div>
+                <div class="trivia-result-bar-track"><div class="trivia-result-bar" style="width:${pct}%;background:${pct>=80?'#6eff99':pct>=60?'#ffcc00':'#ff6b6b'}"></div></div>
+                <button class="btn-primary" id="trivia-restart-btn" style="margin-top:1.5rem;width:100%">Jugar de nuevo 🔄</button>
+            </div>
+            <div class="card trivia-review-card">
+                <h3 style="margin:0 0 1rem;font-size:0.9rem">Revisión de respuestas</h3>
+                ${state.answered.map((a, i) => `
+                    <div class="trivia-review-item ${a.isCorrect ? 'review-correct' : 'review-wrong'}">
+                        <div class="review-q">${i+1}. ${a.q}</div>
+                        <div class="review-a">${a.isCorrect ? '✅' : '❌'} ${state.questions[i].opts[a.chosen]}
+                        ${!a.isCorrect ? `<span style="color:#6eff99;margin-left:0.5rem">→ ${state.questions[i].opts[a.correct]}</span>` : ''}
+                        </div>
+                    </div>`).join('')}
+            </div>`;
+
+        document.getElementById('trivia-restart-btn')?.addEventListener('click', () => {
+            state = {
+                questions: shuffle([...window.triviaQuestions]).slice(0, 10),
+                current: 0, score: 0, answered: [], finished: false
+            };
+            renderQuestion();
+        });
+    }
+
+    renderQuestion();
+}
+
+// ─── EXPORTAR CALENDARIO .ICS ─────────────────────────────────────────────────
+function exportCalendarICS() {
+    const races = window.calendar;
+    const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//F1 Info ARG//ES', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+
+    races.forEach(race => {
+        const dateStr = race.date.replace(/-/g, '');
+        const timeStr = race.time ? race.time.replace(':', '') + '00' : '120000';
+        // Convert Argentina time (UTC-3) to UTC
+        const hour = race.time ? parseInt(race.time.split(':')[0]) + 3 : 15;
+        const timeUTC = String(hour % 24).padStart(2,'0') + (race.time?.split(':')[1] || '00') + '00';
+        const dtStart = `${dateStr}T${timeUTC}Z`;
+        // Race is ~2h
+        const endHour = String((hour + 2) % 24).padStart(2,'0');
+        const dtEnd = `${dateStr}T${endHour}${(race.time?.split(':')[1] || '00')}00Z`;
+
+        lines.push('BEGIN:VEVENT');
+        lines.push(`UID:f1arg-2026-r${race.round}@formula1arg`);
+        lines.push(`DTSTART:${dtStart}`);
+        lines.push(`DTEND:${dtEnd}`);
+        lines.push(`SUMMARY:🏎 ${race.name} 2026`);
+        lines.push(`DESCRIPTION:Ronda ${race.round} · ${race.circuit}${race.sprint ? ' · Fin de semana Sprint' : ''}${race.winner ? ' · Ganador: ' + race.winner : ''}`);
+        lines.push(`LOCATION:${race.circuit}`);
+        lines.push(`CATEGORIES:F1,Formula 1`);
+        lines.push('END:VEVENT');
+    });
+
+    lines.push('END:VCALENDAR');
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'F1-2026-calendario.ics';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// Attach ICS export button if present
+function initCalendarExport() {
+    const btn = document.getElementById('export-ics-btn');
+    if (btn) btn.addEventListener('click', exportCalendarICS);
+}
+
+// ─── BUSCADOR GLOBAL Ctrl+K ───────────────────────────────────────────────────
+function initGlobalSearch() {
+    // Inject modal HTML
+    if (document.getElementById('global-search-modal')) return;
+
+    const modal = document.createElement('div');
+    modal.id = 'global-search-modal';
+    modal.className = 'gs-modal';
+    modal.setAttribute('aria-modal', 'true');
+    modal.innerHTML = `
+        <div class="gs-backdrop" id="gs-backdrop"></div>
+        <div class="gs-dialog">
+            <div class="gs-input-wrap">
+                <span class="gs-icon">🔍</span>
+                <input type="text" id="gs-input" class="gs-input"
+                       placeholder="Buscar piloto, equipo, circuito, término…"
+                       autocomplete="off" spellcheck="false">
+                <kbd class="gs-esc-hint">ESC</kbd>
+            </div>
+            <div id="gs-results" class="gs-results"></div>
+            <div class="gs-footer">
+                <span><kbd>↑↓</kbd> navegar</span>
+                <span><kbd>↵</kbd> abrir</span>
+                <span><kbd>ESC</kbd> cerrar</span>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+
+    const input = document.getElementById('gs-input');
+    const resultsEl = document.getElementById('gs-results');
+    let selectedIdx = -1;
+
+    function openModal() {
+        modal.classList.add('gs-open');
+        input.value = '';
+        resultsEl.innerHTML = '';
+        selectedIdx = -1;
+        setTimeout(() => input.focus(), 50);
+    }
+    function closeModal() {
+        modal.classList.remove('gs-open');
+        input.blur();
+    }
+
+    // Triggers
+    document.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openModal(); }
+        if (e.key === 'Escape') closeModal();
+        if (modal.classList.contains('gs-open')) {
+            const items = resultsEl.querySelectorAll('.gs-result-item');
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIdx = Math.min(selectedIdx + 1, items.length - 1);
+                items.forEach((el, i) => el.classList.toggle('gs-selected', i === selectedIdx));
+                items[selectedIdx]?.scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIdx = Math.max(selectedIdx - 1, 0);
+                items.forEach((el, i) => el.classList.toggle('gs-selected', i === selectedIdx));
+                items[selectedIdx]?.scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'Enter') {
+                const sel = items[selectedIdx] || items[0];
+                if (sel?.dataset.href) window.location.href = sel.dataset.href;
+            }
+        }
+    });
+
+    document.getElementById('gs-backdrop')?.addEventListener('click', closeModal);
+
+    // Search logic
+    input.addEventListener('input', () => {
+        const q = input.value.trim().toLowerCase();
+        selectedIdx = -1;
+        if (!q) { resultsEl.innerHTML = ''; return; }
+
+        const results = [];
+
+        // Drivers
+        window.drivers.forEach(d => {
+            const score =
+                (d.name.toLowerCase().includes(q) ? 3 : 0) +
+                (d.code.toLowerCase().includes(q) ? 2 : 0) +
+                (d.nationality?.toLowerCase().includes(q) ? 1 : 0) +
+                (d.team.toLowerCase().includes(q) ? 1 : 0);
+            if (score > 0) results.push({
+                type: 'driver', score,
+                title: d.name, sub: `${d.team} · ${d.nationality}`,
+                href: `driver.html?slug=${d.slug}`,
+                color: window.getTeamColor(d.teamSlug),
+                icon: d.flagImg ? `<img src="${d.flagImg}" style="width:18px;height:12px;object-fit:cover;border-radius:2px">` : '👤'
+            });
+        });
+
+        // Teams
+        window.constructors.forEach(t => {
+            const score =
+                (t.name.toLowerCase().includes(q) ? 3 : 0) +
+                (t.origin?.toLowerCase().includes(q) ? 1 : 0) +
+                (t.engine?.toLowerCase().includes(q) ? 1 : 0);
+            if (score > 0) results.push({
+                type: 'team', score,
+                title: t.name, sub: `${t.base} · Motor ${t.engine}`,
+                href: `team.html?slug=${t.slug}`,
+                color: window.getTeamColor(t.slug),
+                icon: `<span style="width:12px;height:12px;border-radius:50%;background:${window.getTeamColor(t.slug)};display:inline-block"></span>`
+            });
+        });
+
+        // Circuits
+        (window.circuits || []).forEach(c => {
+            const score =
+                (c.name.toLowerCase().includes(q) ? 3 : 0) +
+                (c.country.toLowerCase().includes(q) ? 2 : 0) +
+                (c.city.toLowerCase().includes(q) ? 1 : 0);
+            if (score > 0) results.push({
+                type: 'circuit', score,
+                title: c.name, sub: `${c.country} · ${c.length} km`,
+                href: `circuits.html`,
+                color: c.color || '#888',
+                icon: c.flag || '🏁'
+            });
+        });
+
+        // Glossary
+        (window.glossaryTerms || []).forEach(t => {
+            if (t.term.toLowerCase().includes(q) || t.full?.toLowerCase().includes(q)) {
+                results.push({
+                    type: 'glossary', score: 1,
+                    title: t.term, sub: t.full || t.cat,
+                    href: `glossary.html`,
+                    color: '#00D2BE',
+                    icon: '📖'
+                });
+            }
+        });
+
+        // Pages
+        const pages = [
+            { title: 'Estadísticas', sub: 'Victorias, poles, récords', href: 'stats.html', icon: '📊' },
+            { title: 'Timeline', sub: 'Evolución del campeonato', href: 'timeline.html', icon: '📈' },
+            { title: 'Predictor', sub: 'Predecí el próximo podio', href: 'predictor.html', icon: '🎯' },
+            { title: 'Trivia', sub: '¿Cuánto sabés de F1?', href: 'trivia.html', icon: '🧠' },
+            { title: 'Rookies', sub: 'Debutantes 2026', href: 'rookies.html', icon: '🌟' },
+            { title: 'Glosario', sub: 'Términos F1 2026', href: 'glossary.html', icon: '📖' },
+            { title: 'Livrées', sub: 'Diseños de los autos', href: 'livrees.html', icon: '🎨' },
+            { title: 'Calendario', sub: 'Carreras 2026', href: 'calendar.html', icon: '📅' },
+            { title: 'Circuitos', sub: 'Trazados y récords', href: 'circuits.html', icon: '🗺' },
+        ];
+        pages.forEach(p => {
+            if (p.title.toLowerCase().includes(q)) results.push({ ...p, type: 'page', score: 2, color: '#888' });
+        });
+
+        results.sort((a,b) => b.score - a.score);
+        const top = results.slice(0, 8);
+
+        if (!top.length) {
+            resultsEl.innerHTML = `<div class="gs-empty">Sin resultados para "<strong>${q}</strong>"</div>`;
+            return;
+        }
+
+        const typeLabels = { driver:'Piloto', team:'Escudería', circuit:'Circuito', glossary:'Glosario', page:'Página' };
+        resultsEl.innerHTML = top.map((r, i) => `
+            <a href="${r.href}" class="gs-result-item ${i === 0 ? 'gs-selected' : ''}" data-href="${r.href}">
+                <span class="gs-result-icon">${typeof r.icon === 'string' ? r.icon : ''}</span>
+                <span class="gs-result-info">
+                    <span class="gs-result-title" style="color:${r.color}">${r.title}</span>
+                    <span class="gs-result-sub">${r.sub}</span>
+                </span>
+                <span class="gs-result-type">${typeLabels[r.type] || r.type}</span>
+            </a>`).join('');
+
+        selectedIdx = 0;
+        resultsEl.querySelectorAll('.gs-result-item').forEach(item => {
+            item.addEventListener('click', () => closeModal());
+        });
+    });
+
+    // Add trigger hint badge to page if not on mobile
+    if (window.innerWidth > 768) {
+        const hint = document.createElement('div');
+        hint.className = 'gs-trigger-hint';
+        hint.innerHTML = '<kbd>Ctrl</kbd> <kbd>K</kbd>';
+        hint.addEventListener('click', openModal);
+        document.body.appendChild(hint);
+    }
+}
