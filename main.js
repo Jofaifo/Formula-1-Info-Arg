@@ -2655,3 +2655,354 @@ function initGlobalSearch() {
         document.body.appendChild(hint);
     }
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BLOQUE 4 — MODO CLARO/OSCURO, SCROLL ANIM, SWIPE, PWA, PUSH, SHARE IMAGE
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ─── MODO CLARO / OSCURO ─────────────────────────────────────────────────────
+const THEME_KEY = 'f1arg_theme';
+
+function initTheme() {
+    const saved = localStorage.getItem(THEME_KEY);
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = saved ? saved === 'dark' : prefersDark;
+    applyTheme(isDark ? 'dark' : 'light', false);
+    injectThemeToggle();
+}
+
+function applyTheme(theme, save = true) {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (save) localStorage.setItem(THEME_KEY, theme);
+    const btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+
+function injectThemeToggle() {
+    if (document.getElementById('theme-toggle-btn')) return;
+    const btn = document.createElement('button');
+    btn.id = 'theme-toggle-btn';
+    btn.className = 'theme-toggle-btn';
+    btn.title = 'Cambiar tema';
+    btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+    btn.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+    document.body.appendChild(btn);
+}
+
+// ─── ANIMACIONES AL HACER SCROLL ─────────────────────────────────────────────
+function initScrollAnimations() {
+    const targets = document.querySelectorAll('.card, .rookie-card, .circuit-card, .glossary-item, .livree-card, .record-card, .timeline-race-card, .pred-hist-card, .h2h-card');
+    if (!targets.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('scroll-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    targets.forEach((el, i) => {
+        el.classList.add('scroll-hidden');
+        el.style.transitionDelay = `${Math.min(i % 6, 5) * 60}ms`;
+        observer.observe(el);
+    });
+}
+
+// ─── SWIPE ENTRE PILOTOS (mobile, página de detalle) ─────────────────────────
+function initDriverSwipe() {
+    if (!document.body.classList.contains('page-driver-detail')) return;
+    const params = new URLSearchParams(window.location.search);
+    const currentSlug = params.get('slug');
+    if (!currentSlug) return;
+
+    const drivers = window.drivers;
+    const idx = drivers.findIndex(d => d.slug === currentSlug);
+    if (idx < 0) return;
+
+    const prevDriver = idx > 0 ? drivers[idx - 1] : null;
+    const nextDriver = idx < drivers.length - 1 ? drivers[idx + 1] : null;
+
+    // Inject swipe nav
+    const nav = document.createElement('div');
+    nav.className = 'swipe-nav';
+    nav.innerHTML = `
+        ${prevDriver ? `<a class="swipe-btn swipe-prev" href="driver.html?slug=${prevDriver.slug}">
+            ← <span>${prevDriver.name}</span>
+        </a>` : '<span class="swipe-btn swipe-disabled">←</span>'}
+        <span class="swipe-counter">${idx + 1} / ${drivers.length}</span>
+        ${nextDriver ? `<a class="swipe-btn swipe-next" href="driver.html?slug=${nextDriver.slug}">
+            <span>${nextDriver.name}</span> →
+        </a>` : '<span class="swipe-btn swipe-disabled">→</span>'}`;
+
+    const container = document.querySelector('.container');
+    if (container) container.insertBefore(nav, container.firstChild);
+
+    // Touch swipe
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) < 60) return;
+        if (dx < 0 && nextDriver) window.location.href = `driver.html?slug=${nextDriver.slug}`;
+        if (dx > 0 && prevDriver) window.location.href = `driver.html?slug=${prevDriver.slug}`;
+    });
+
+    // Arrow keys
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft' && prevDriver) window.location.href = `driver.html?slug=${prevDriver.slug}`;
+        if (e.key === 'ArrowRight' && nextDriver) window.location.href = `driver.html?slug=${nextDriver.slug}`;
+    });
+}
+
+// ─── COMPARTIR RESULTADO COMO IMAGEN ─────────────────────────────────────────
+function initShareButtons() {
+    // Inject share button on driver detail and race result cards
+    document.querySelectorAll('.driver-detail-share-target, .race-result-card').forEach(el => {
+        const btn = document.createElement('button');
+        btn.className = 'share-img-btn';
+        btn.textContent = '📤 Compartir';
+        btn.addEventListener('click', () => shareAsImage(el));
+        el.appendChild(btn);
+    });
+
+    // Also add share to standings if on drivers page
+    if (document.body.classList.contains('page-home') || document.body.classList.contains('page-drivers')) {
+        const fabShare = document.createElement('button');
+        fabShare.className = 'share-fab-btn';
+        fabShare.title = 'Compartir clasificación';
+        fabShare.textContent = '📤';
+        fabShare.addEventListener('click', shareStandings);
+        document.body.appendChild(fabShare);
+    }
+}
+
+function shareStandings() {
+    const canvas = document.createElement('canvas');
+    const W = 540, ROWS = Math.min(window.drivers.length, 10);
+    const ROW_H = 54, HEADER_H = 90, FOOTER_H = 48;
+    canvas.width = W;
+    canvas.height = HEADER_H + ROWS * ROW_H + FOOTER_H;
+    const ctx = canvas.getContext('2d');
+
+    // Background
+    ctx.fillStyle = '#0f0f1a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Header gradient
+    const grad = ctx.createLinearGradient(0, 0, W, 0);
+    grad.addColorStop(0, '#1a0a0a');
+    grad.addColorStop(1, '#0f0f1a');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, HEADER_H);
+
+    // Red accent bar
+    ctx.fillStyle = '#E10600';
+    ctx.fillRect(0, 0, 4, HEADER_H);
+
+    // Title
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 22px Arial';
+    ctx.fillText('Campeonato de Pilotos 2026', 24, 36);
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.font = '13px Arial';
+    const racesDone = window.races.length;
+    ctx.fillText(`Después de ${racesDone} carrera${racesDone !== 1 ? 's' : ''}`, 24, 58);
+
+    // Rows
+    window.drivers.slice(0, ROWS).forEach((d, i) => {
+        const y = HEADER_H + i * ROW_H;
+        const color = window.getTeamColor(d.teamSlug);
+
+        // Row bg alternating
+        ctx.fillStyle = i % 2 === 0 ? 'rgba(255,255,255,0.03)' : 'transparent';
+        ctx.fillRect(0, y, W, ROW_H);
+
+        // Team color accent
+        ctx.fillStyle = color;
+        ctx.fillRect(0, y + 8, 3, ROW_H - 16);
+
+        // Position
+        ctx.fillStyle = i < 3 ? '#FFD700' : 'rgba(255,255,255,0.35)';
+        ctx.font = `bold ${i < 3 ? '20' : '17'}px Arial`;
+        ctx.fillText(`${i + 1}`, 18, y + ROW_H / 2 + 7);
+
+        // Name
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 15px Arial';
+        ctx.fillText(d.name, 44, y + ROW_H / 2 + 5);
+
+        // Team
+        ctx.fillStyle = color;
+        ctx.font = '11px Arial';
+        ctx.fillText(d.team, 44, y + ROW_H / 2 + 20);
+
+        // Points
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 17px Arial';
+        ctx.textAlign = 'right';
+        ctx.fillText(`${d.points} pts`, W - 20, y + ROW_H / 2 + 7);
+        ctx.textAlign = 'left';
+    });
+
+    // Footer
+    const fy = HEADER_H + ROWS * ROW_H;
+    ctx.fillStyle = 'rgba(255,255,255,0.06)';
+    ctx.fillRect(0, fy, W, FOOTER_H);
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '11px Arial';
+    ctx.fillText('F1 Info ARG · @formula1arg__ en Instagram', 20, fy + 28);
+
+    // Download / share
+    canvas.toBlob(blob => {
+        if (navigator.share && navigator.canShare({ files: [new File([blob], 'f1-standings.png', { type: 'image/png' })] })) {
+            navigator.share({
+                title: 'Campeonato F1 2026',
+                text: `Top 10 después de ${window.races.length} carreras`,
+                files: [new File([blob], 'f1-standings.png', { type: 'image/png' })]
+            });
+        } else {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'f1-standings-2026.png';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    }, 'image/png');
+}
+
+function shareAsImage(el) {
+    // Fallback: just use Web Share API with text
+    const text = el.innerText?.slice(0, 200) || 'F1 Info ARG 2026';
+    if (navigator.share) {
+        navigator.share({ title: 'F1 Info ARG', text, url: window.location.href });
+    } else {
+        navigator.clipboard?.writeText(window.location.href);
+        alert('URL copiada al portapapeles');
+    }
+}
+
+// ─── PWA: SERVICE WORKER + INSTALL PROMPT ────────────────────────────────────
+function initPWA() {
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+
+    // Install prompt
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', e => {
+        e.preventDefault();
+        deferredPrompt = e;
+        showInstallBanner();
+    });
+
+    function showInstallBanner() {
+        if (document.getElementById('pwa-install-banner')) return;
+        const banner = document.createElement('div');
+        banner.id = 'pwa-install-banner';
+        banner.className = 'pwa-banner';
+        banner.innerHTML = `
+            <div class="pwa-banner-content">
+                <img src="img/logo-f1arg.jpg" class="pwa-banner-icon" alt="F1 Info ARG">
+                <div>
+                    <strong>Instalá F1 Info ARG</strong>
+                    <p>Accedé como app desde tu pantalla de inicio</p>
+                </div>
+            </div>
+            <div class="pwa-banner-actions">
+                <button class="pwa-install-btn" id="pwa-install-btn">Instalar</button>
+                <button class="pwa-dismiss-btn" id="pwa-dismiss-btn">✕</button>
+            </div>`;
+        document.body.appendChild(banner);
+        setTimeout(() => banner.classList.add('pwa-banner-visible'), 100);
+
+        document.getElementById('pwa-install-btn')?.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            banner.remove();
+        });
+        document.getElementById('pwa-dismiss-btn')?.addEventListener('click', () => {
+            banner.classList.remove('pwa-banner-visible');
+            setTimeout(() => banner.remove(), 300);
+        });
+    }
+}
+
+// ─── NOTIFICACIONES PUSH ──────────────────────────────────────────────────────
+function initNotifications() {
+    if (!('Notification' in window)) return;
+
+    const btn = document.getElementById('notify-btn');
+    if (!btn) return;
+
+    function updateBtn() {
+        if (Notification.permission === 'granted') {
+            btn.textContent = '🔔 Notificaciones activas';
+            btn.classList.add('notify-active');
+        } else if (Notification.permission === 'denied') {
+            btn.textContent = '🔕 Notificaciones bloqueadas';
+            btn.disabled = true;
+        } else {
+            btn.textContent = '🔔 Activar notificaciones de GP';
+        }
+    }
+    updateBtn();
+
+    btn.addEventListener('click', async () => {
+        if (Notification.permission === 'granted') {
+            // Test notification
+            new Notification('F1 Info ARG 🏎', {
+                body: 'Las notificaciones están activas. Te avisaremos antes de cada GP.',
+                icon: 'img/logo-f1arg.jpg'
+            });
+            return;
+        }
+        const result = await Notification.requestPermission();
+        updateBtn();
+        if (result === 'granted') {
+            new Notification('F1 Info ARG 🏎', {
+                body: '¡Notificaciones activadas! Te avisaremos antes de cada Gran Premio.',
+                icon: 'img/logo-f1arg.jpg'
+            });
+            scheduleRaceNotifications();
+        }
+    });
+}
+
+function scheduleRaceNotifications() {
+    const nextRace = window.calendar.find(r => r.status === 'next' || r.status === 'upcoming');
+    if (!nextRace || !nextRace.time) return;
+
+    const raceDate = new Date(`${nextRace.date}T${nextRace.time}:00-03:00`);
+    const oneDayBefore = new Date(raceDate - 24 * 60 * 60 * 1000);
+    const now = new Date();
+
+    // Store in localStorage for SW to pick up
+    const scheduled = JSON.parse(localStorage.getItem('f1arg_notifs') || '[]');
+    scheduled.push({
+        title: `🏎 Mañana: ${nextRace.name}`,
+        body: `${nextRace.circuit} · ${nextRace.time} hs Argentina`,
+        scheduledFor: oneDayBefore.toISOString(),
+        raceRound: nextRace.round
+    });
+    localStorage.setItem('f1arg_notifs', JSON.stringify(scheduled));
+}
+
+// Inject notify button into index if present
+function injectNotifyButton() {
+    const el = document.getElementById('notify-btn-wrap');
+    if (!el) return;
+    const btn = document.createElement('button');
+    btn.id = 'notify-btn';
+    btn.className = 'notify-btn';
+    btn.textContent = '🔔 Activar notificaciones de GP';
+    el.appendChild(btn);
+    initNotifications();
+}

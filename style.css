@@ -2279,3 +2279,152 @@ p { margin: 0 0 1rem; color: var(--muted); }
     border-radius: 4px; padding: 0.1rem 0.4rem;
     font-family: inherit; font-size: 0.72rem; color: white;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   BLOQUE 4 — TEMA CLARO/OSCURO, SCROLL ANIM, SWIPE, PWA, SHARE
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── MODO CLARO ─────────────────────────────────────────────────────────────── */
+[data-theme="light"] {
+    --bg-color: #f0f0f5;
+    --surface-color: #ffffff;
+    --surface-strong: #e8e8f0;
+    --text-color: #111122;
+    --muted: #555577;
+    --border-color: rgba(0,0,0,0.10);
+    --accent-color: #E10600;
+}
+[data-theme="light"] body { background: var(--bg-color); color: var(--text-color); }
+[data-theme="light"] .card {
+    background: var(--surface-color);
+    border-color: rgba(0,0,0,0.08);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+[data-theme="light"] .standings th,
+[data-theme="light"] .matrix-table th { color: #444; }
+[data-theme="light"] .gs-dialog { background: #ffffff; border-color: rgba(0,0,0,0.12); }
+[data-theme="light"] .gs-backdrop { background: rgba(0,0,0,0.4); }
+[data-theme="light"] .gs-input { color: #111; }
+[data-theme="light"] .gs-result-item:hover,
+[data-theme="light"] .gs-result-item.gs-selected { background: rgba(0,0,0,0.05); }
+[data-theme="light"] .hero-links { background: rgba(0,0,0,0.04); }
+[data-theme="light"] .hero-link { color: #333; }
+[data-theme="light"] .hero-link:hover { background: rgba(0,0,0,0.08); color: #111; }
+[data-theme="light"] input, [data-theme="light"] select, [data-theme="light"] textarea {
+    background: rgba(0,0,0,0.04) !important;
+    border-color: rgba(0,0,0,0.15) !important;
+    color: #111 !important;
+}
+[data-theme="light"] .glossary-item { background: #fafafa; }
+[data-theme="light"] .swipe-btn { background: rgba(0,0,0,0.06); color: #333; border-color: rgba(0,0,0,0.12); }
+[data-theme="light"] .pwa-banner { background: #ffffff; border-color: rgba(0,0,0,0.12); }
+
+/* ─── THEME TOGGLE BUTTON ────────────────────────────────────────────────────── */
+.theme-toggle-btn {
+    position: fixed; top: 1rem; right: 1rem;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    font-size: 1.1rem; cursor: pointer;
+    z-index: 500; transition: background 0.2s, transform 0.15s;
+    display: flex; align-items: center; justify-content: center;
+}
+.theme-toggle-btn:hover { background: rgba(255,255,255,0.16); transform: scale(1.1); }
+[data-theme="light"] .theme-toggle-btn {
+    background: rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.15);
+}
+
+/* ─── SCROLL ANIMATIONS ──────────────────────────────────────────────────────── */
+.scroll-hidden {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.scroll-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ─── SWIPE NAV ──────────────────────────────────────────────────────────────── */
+.swipe-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 0.75rem; margin-bottom: 1rem;
+}
+.swipe-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    color: white; padding: 0.45rem 0.9rem; border-radius: 10px;
+    text-decoration: none; font-size: 0.82rem; font-weight: 700;
+    transition: background 0.2s; max-width: 45%;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.swipe-btn:hover { background: rgba(255,255,255,0.12); }
+.swipe-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.swipe-disabled { opacity: 0.25; cursor: default; background: transparent; border-color: transparent; }
+.swipe-counter { font-size: 0.78rem; color: var(--muted); flex-shrink: 0; }
+
+/* ─── SHARE BUTTONS ──────────────────────────────────────────────────────────── */
+.share-img-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    color: white; padding: 0.45rem 0.9rem; border-radius: 8px;
+    font-size: 0.82rem; font-weight: 700; cursor: pointer;
+    transition: background 0.2s; margin-top: 0.75rem;
+}
+.share-img-btn:hover { background: rgba(255,255,255,0.12); }
+
+.share-fab-btn {
+    position: fixed; bottom: 5rem; right: 1.5rem;
+    width: 46px; height: 46px; border-radius: 50%;
+    background: var(--accent-color); border: none;
+    font-size: 1.2rem; cursor: pointer; z-index: 100;
+    box-shadow: 0 4px 18px rgba(225,6,0,0.4);
+    transition: transform 0.15s, box-shadow 0.15s;
+    display: flex; align-items: center; justify-content: center;
+}
+.share-fab-btn:hover { transform: scale(1.1); box-shadow: 0 6px 24px rgba(225,6,0,0.55); }
+
+/* ─── PWA INSTALL BANNER ─────────────────────────────────────────────────────── */
+.pwa-banner {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #1a1a2e; border-top: 1px solid rgba(255,255,255,0.12);
+    padding: 0.9rem 1.25rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    z-index: 800; transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.35);
+}
+.pwa-banner.pwa-banner-visible { transform: translateY(0); }
+.pwa-banner-content { display: flex; align-items: center; gap: 0.9rem; flex: 1; min-width: 0; }
+.pwa-banner-icon { width: 42px; height: 42px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+.pwa-banner-content strong { display: block; font-size: 0.92rem; font-weight: 800; }
+.pwa-banner-content p { font-size: 0.78rem; color: var(--muted); margin: 0.1rem 0 0; }
+.pwa-banner-actions { display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; }
+.pwa-install-btn {
+    background: var(--accent-color); color: white; border: none;
+    padding: 0.55rem 1.1rem; border-radius: 8px;
+    font-size: 0.88rem; font-weight: 700; cursor: pointer;
+    transition: background 0.2s;
+}
+.pwa-install-btn:hover { background: #cc0000; }
+.pwa-dismiss-btn {
+    background: transparent; border: 1px solid rgba(255,255,255,0.15);
+    color: var(--muted); width: 34px; height: 34px; border-radius: 50%;
+    font-size: 0.9rem; cursor: pointer; transition: background 0.2s;
+    display: flex; align-items: center; justify-content: center;
+}
+.pwa-dismiss-btn:hover { background: rgba(255,255,255,0.08); }
+
+/* ─── NOTIFY BUTTON ──────────────────────────────────────────────────────────── */
+.notify-btn-wrap { text-align: center; padding: 0.5rem 0 0; }
+.notify-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+    color: white; padding: 0.6rem 1.25rem; border-radius: 999px;
+    font-size: 0.85rem; font-weight: 700; cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+.notify-btn:hover { background: rgba(255,255,255,0.1); }
+.notify-btn.notify-active { border-color: rgba(110,255,153,0.4); color: #6eff99; }
+.notify-btn:disabled { opacity: 0.45; cursor: not-allowed; }
