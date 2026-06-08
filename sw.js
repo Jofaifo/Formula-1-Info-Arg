@@ -1,5 +1,5 @@
 // F1 Info ARG — Service Worker v1
-const CACHE_NAME = 'f1arg-v1';
+const CACHE_NAME = 'f1arg-v2';
 const STATIC_ASSETS = [
     '/',
     '/index.html',

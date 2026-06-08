@@ -257,8 +257,8 @@
     <!-- TAB: Campeonato -->
     <div class="admin-panel" id="panel-championship">
         <div class="card admin-section">
-            <h2><span class="section-icon">📊</span> Ajustar puntajes del campeonato</h2>
-            <p style="font-size:0.85rem;color:var(--muted);margin:0 0 1rem">Los puntajes se recalculan automáticamente al guardar resultados. Usá esto solo para correcciones manuales.</p>
+            <h2><span class="section-icon">📊</span> Pilotos — ajuste manual de puntajes</h2>
+            <p style="font-size:0.85rem;color:var(--muted);margin:0 0 1rem">Usá esto solo para correcciones manuales después de exportar.</p>
             <div style="overflow-x:auto">
                 <table class="race-results-table" id="standings-edit-table">
                     <thead><tr><th>Piloto</th><th>Equipo</th><th>Puntos</th><th>Victorias</th><th>Podios</th><th>Poles</th></tr></thead>
@@ -266,7 +266,19 @@
                 </table>
             </div>
             <div class="btn-row" style="margin-top:1rem">
-                <button class="btn-primary" id="save-standings-btn">Guardar cambios →</button>
+                <button class="btn-primary" id="save-standings-btn">Guardar pilotos →</button>
+            </div>
+        </div>
+        <div class="card admin-section">
+            <h2><span class="section-icon">🏭</span> Constructores — ajuste manual de puntajes</h2>
+            <div style="overflow-x:auto">
+                <table class="race-results-table" id="constructors-edit-table">
+                    <thead><tr><th>Escudería</th><th>Puntos</th><th>Pos.</th></tr></thead>
+                    <tbody id="constructors-edit-tbody"></tbody>
+                </table>
+            </div>
+            <div class="btn-row" style="margin-top:1rem">
+                <button class="btn-primary" id="save-constructors-btn">Guardar constructores →</button>
             </div>
         </div>
         <div class="card admin-section">
@@ -340,6 +352,7 @@
                 <button class="btn-primary" id="export-races-btn">Exportar window.races</button>
                 <button class="btn-primary" id="export-drivers-btn">Exportar window.drivers (pts)</button>
                 <button class="btn-primary" id="export-calendar-btn">Exportar window.calendar</button>
+                <button class="btn-primary" id="export-constructors-btn">Exportar window.constructors</button>
                 <button class="btn-secondary" id="export-all-btn">Exportar todo</button>
             </div>
             <div id="export-output" style="display:none">
@@ -377,7 +390,8 @@
 // ─── ADMIN PANEL LOGIC ────────────────────────────────────────────────────────
 
 // State: deep copy of data for editing
-let adminDrivers = JSON.parse(JSON.stringify(window.drivers));
+let adminDrivers     = JSON.parse(JSON.stringify(window.drivers));
+let adminConstructors = JSON.parse(JSON.stringify(window.constructors));
 let adminRaces   = JSON.parse(JSON.stringify(window.races));
 let adminCalendar = JSON.parse(JSON.stringify(window.calendar));
 
@@ -631,6 +645,39 @@ function initChampionship() {
     });
 
     document.getElementById('save-standings-btn').addEventListener('click', saveStandings);
+
+    // ── Constructors table ──────────────────────────────────────────────────
+    const ctbody = document.getElementById('constructors-edit-tbody');
+    if (ctbody) {
+        ctbody.innerHTML = '';
+        adminConstructors.forEach(t => {
+            const color = window.teamColors[t.slug] || '#888';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <span class="driver-dot" style="background:${color}"></span>
+                    <strong style="margin-left:6px">${t.name}</strong>
+                </td>
+                <td><input type="number" min="0" class="pos-input" data-slug="${t.slug}" data-field="points"
+                    value="${t.points}"
+                    style="width:80px;padding:0.35rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:white;border-radius:8px;text-align:center"></td>
+                <td><input type="number" min="1" max="11" class="pos-input" data-slug="${t.slug}" data-field="position"
+                    value="${t.position}"
+                    style="width:55px;padding:0.35rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:white;border-radius:8px;text-align:center"></td>`;
+            ctbody.appendChild(tr);
+        });
+    }
+
+    document.getElementById('save-constructors-btn')?.addEventListener('click', () => {
+        document.querySelectorAll('#constructors-edit-tbody input').forEach(input => {
+            const t = adminConstructors.find(x => x.slug === input.dataset.slug);
+            if (t) t[input.dataset.field] = parseInt(input.value) || 0;
+        });
+        adminConstructors.sort((a,b) => b.points - a.points);
+        adminConstructors.forEach((t,i) => t.position = i+1);
+        showToast('✅ Constructores actualizados. Exportá para aplicar.');
+    });
+
     updateStandingsPreview();
 }
 
@@ -704,6 +751,7 @@ function initCalendarEdit() {
 function initExport() {
     document.getElementById('export-races-btn').addEventListener('click', () => exportBlock('races'));
     document.getElementById('export-drivers-btn').addEventListener('click', () => exportBlock('drivers'));
+    document.getElementById('export-constructors-btn')?.addEventListener('click', () => exportBlock('constructors'));
     document.getElementById('export-calendar-btn').addEventListener('click', () => exportBlock('calendar'));
     document.getElementById('export-all-btn').addEventListener('click', () => exportBlock('all'));
     document.getElementById('copy-btn').addEventListener('click', copyCode);
@@ -733,6 +781,15 @@ function exportBlock(type) {
         }));
         text += '// window.drivers — puntos actualizados ' + new Date().toLocaleDateString('es-AR') + '\n';
         text += 'window.drivers = ' + JSON.stringify(driverExport, null, 4) + ';\n\n';
+    }
+    if (type === 'constructors' || type === 'all') {
+        const constructorExport = adminConstructors.map(t => ({
+            ...t,
+            points: t.points,
+            position: t.position,
+        }));
+        text += '// window.constructors — puntos actualizados ' + new Date().toLocaleDateString('es-AR') + '\n';
+        text += 'window.constructors = ' + JSON.stringify(constructorExport, null, 4) + ';\n\n';
     }
     if (type === 'calendar' || type === 'all') {
         text += '// window.calendar — actualizado ' + new Date().toLocaleDateString('es-AR') + '\n';
