@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pilotos F1 Info ARG</title>
+    <title>Circuitos F1 2026 — F1 Info ARG</title>
         <link rel="icon" type="image/jpeg" href="img/logo-f1arg.jpg">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#E10600">
@@ -11,13 +11,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="page-drivers">
+<body class="page-circuits">
     <div class="container">
         <header class="page-header card">
             <div>
-                <span class="season-label">Pilotos 2026</span>
-                <h1>Tabla de Pilotos</h1>
-                <p>Consulta los puntajes y abre las mini páginas de cada piloto.</p>
+                <span class="season-label">Circuitos 2026</span>
+                <h1>Circuitos del Mundo</h1>
+                <p>Trazados, longitudes, récords de vuelta y datos de cada pista de la temporada.</p>
             </div>
             <div class="header-actions">
                                         <nav class="hero-links">
@@ -40,28 +40,7 @@
             </div>
         </header>
 
-        <section class="card standings-card">
-            <h2>Puntos por piloto</h2>
-            <table class="standings" id="driver-standings">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Piloto</th>
-                        <th>Equipo</th>
-                        <th>Puntos</th>
-                        <th>Detalle</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </section>
-
-        <section class="entity-grid" id="driver-cards"></section>
-
-        <section class="card search-card">
-            <h2>Resultados de búsqueda</h2>
-            <ul id="search-results" class="results" aria-live="polite"></ul>
-        </section>
+        <section id="circuits-grid" class="circuits-grid"></section>
     </div>
 
     <footer class="site-footer">

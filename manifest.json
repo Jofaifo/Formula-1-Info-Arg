@@ -1,0 +1,20 @@
+{
+    "name": "F1 Info ARG",
+    "short_name": "F1 ARG",
+    "description": "Resultados, estadísticas y toda la info de la Fórmula 1 2026 en español.",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#0f0f1a",
+    "theme_color": "#E10600",
+    "orientation": "portrait-primary",
+    "lang": "es",
+    "icons": [
+        { "src": "img/logo-f1arg.jpg", "sizes": "192x192", "type": "image/jpeg" },
+        { "src": "img/logo-f1arg.jpg", "sizes": "512x512", "type": "image/jpeg" }
+    ],
+    "shortcuts": [
+        { "name": "Pilotos", "url": "/drivers.html", "description": "Ver clasificación de pilotos" },
+        { "name": "Calendario", "url": "/calendar.html", "description": "Ver calendario 2026" },
+        { "name": "Trivia", "url": "/trivia.html", "description": "Jugar trivia de F1" }
+    ]
+}

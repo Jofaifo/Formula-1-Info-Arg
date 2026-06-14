@@ -1,6 +1,6 @@
-# Formula-1 - Puntajes (Prueba)
+# F1 Info ARG — Puntajes, Calendario e Info
 
-Proyecto de prueba para calcular y visualizar puntajes de pilotos en carreras de Fórmula 1. Incluye lógica básica para asignar puntos según la posición de llegada, sumar totales por piloto y generar tablas de clasificación.
+Puntajes, calendario con horarios argentinos e información de la Fórmula 1. Todo en un solo lugar. Este proyecto ofrece una vista centralizada de los resultados de cada carrera, los totales de puntos de pilotos y equipos, y el calendario actualizado con horarios ajustados a Argentina.
 
 Características:
 - Cálculo de puntajes por posición.
